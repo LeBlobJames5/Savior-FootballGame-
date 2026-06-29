@@ -1,8 +1,7 @@
 import * as ex from 'excalibur';
 import { Resources } from '../resources';
+
 export class MainMenu extends ex.Scene {
-
-
   onInitialize(engine: ex.Engine) {
 
     const centerX = engine.drawWidth * 0.5;
@@ -20,35 +19,39 @@ const logo = new ex.Actor({
   anchor: ex.Vector.Half
 });
 
-this.add(logo);
+  logo.graphics.use(Resources.Logo.toSprite());
 
-logo.graphics.use(Resources.Logo.toSprite());
+  logo.anchor = ex.Vector.Half;
 
-    // Centrage
-    logo.anchor = ex.Vector.Half;
-
-    // Bouton jouer
-    const playButton = new ex.Label({
-      text: "Jouer",
-      pos: ex.vec(centerX, centerY * 1.10),
-      font: new ex.Font({
-        size: 36,
-        family: 'Arial'
-      }),
-      color: ex.Color.White,
+    const playButton = this.createImageButton({
+      x: centerX,
+      y: centerY * 1.05,
+      width: 300,
+      height: 90,
+      image: Resources.Play,
+      onClick: () => {
+        engine.goToScene('game');
+      }
     });
 
+    const gymButton = this.createImageButton({
+      x: centerX,
+      y: centerY * 1.25,
+      width: 360,
+      height: 100,
+      image: Resources.SalleDS,
+      onClick: () => {
+        engine.goToScene('gym');
+      }
+    });
+    
     playButton.anchor = ex.Vector.Half;
-
-    playButton.on('pointerup', () => {
-      engine.goToScene('game');
-    });
-
-    // Ajouter à la scène
+    gymButton.anchor = ex.Vector.Half;
+    
     this.add(logo);
     this.add(playButton);
+    this.add(gymButton);
 
-    // Responsive resize
     engine.on('resize', () => {
 
       const cx = engine.drawWidth * 0.5;
@@ -57,5 +60,32 @@ logo.graphics.use(Resources.Logo.toSprite());
       logo.pos = ex.vec(cx, cy * 0.3);
       playButton.pos = ex.vec(cx, cy * 0.65);
     });
+  }
+
+  private createImageButton(options: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    image: ex.ImageSource;
+    onClick: () => void;
+  }): ex.Actor {
+    const button = new ex.Actor({
+      x: options.x,
+      y: options.y,
+      width: options.width,
+      height: options.height,
+      anchor: ex.Vector.Half,
+      z: 20
+    });
+   const sprite = options.image.toSprite();
+    sprite.width = options.width;
+    sprite.height = options.height;
+
+    button.graphics.use(sprite);
+
+    button.on('pointerup', options.onClick);
+
+    return button;
   }
 }
