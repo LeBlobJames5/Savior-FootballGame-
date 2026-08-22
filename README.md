@@ -1,7 +1,7 @@
 -> Savior is a 2D american football game mainly written in Typescript and powered by excalbur.js.
 
 -> As a player, you'll get to wander around the city, go to the gym and use what you've learned to win football games.
-   The main point of the game is to help athletes understand how can being prepared can save your career by avoiding injuries.
+   The main point of the game is to help athletes understand how can being prepared can save their career by avoiding injuries.
    Savior mixes both fun and educative purposes in order to help these athletes with research based exercises.
    The gym is the heart of the game. There, you'll find machines to help you improve your player's toughness, as you would do it for yourself.
    All the drills and exercises are explained for these athletes to be able to do them for themselves.
