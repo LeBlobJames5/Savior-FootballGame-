@@ -15,7 +15,8 @@
 -> CONTROLS: 
   - Movement: W/A/S/D
 
--> The next steps for the game are to give the character a personalized look and to make the city usable.
+-> The next steps for the game are to give the character a personalized look and  make the city usable.
 
 **Mathéo Campanale**
+
 Personal School project
