@@ -30,7 +30,7 @@ const logo = new ex.Actor({
       height: 90,
       image: Resources.Play,
       onClick: () => {
-        engine.goToScene('game');
+        engine.goToScene('city');
       }
     });
 

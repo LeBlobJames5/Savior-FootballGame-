@@ -3,6 +3,7 @@ import { MainMenu } from './scenes/MenuPrincipal';
 import { GameScene } from './scenes/JeuPrincipal';
 import { ResourceLoader } from './resources';
 import { Gym } from './scenes/Gym'
+import { City } from './scenes/City';
 
 
 
@@ -15,6 +16,7 @@ const game = new ex.Engine({
 game.add('menu', new MainMenu());
 game.add('game', new GameScene());
 game.add('gym', new Gym());
+game.add('city', new City());
 
 game.start(ResourceLoader).then(() => {
   game.goToScene('menu');

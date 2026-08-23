@@ -1,31 +1,34 @@
 import * as ex from 'excalibur';
 import { Player } from '../actors/BigMan';
-import { BigStats } from '../Karakteristics/stats'
+import { BigStats } from '../State/stats'
 import { Machines } from '../actors/Machines'
 import { Resources } from '../resources'
+import { MainMenu } from './MenuPrincipal';
 
 
 
 export class Gym extends ex.Scene{
      onInitialize(engine: ex.Engine) {
         const BigManThing = new Player();
-        BigManThing.pos= new ex.Vector(1950,970);
+        BigManThing.pos= new ex.Vector(1880,970);
         BigManThing.z = 10;
 
         const gymBackground = new ex.Actor({
       x: engine.drawWidth / 2,
       y: engine.drawHeight / 2,
       width: 800,
-      height: 500
+      height: 500,
+      color: ex.Color.Green
     });
 
     const gymSprite = Resources.Gym.toSprite();
-    gymSprite.width = 1700;
+    gymSprite.width = 1500;
     gymSprite.height = 1200;
     gymBackground.graphics.use(gymSprite);
         
         this.add(BigManThing);
         this.add(gymBackground);
+        this.engine.backgroundColor = ex.Color.fromHex('#85CE64');
 
         const wallThickness = 30;
 
@@ -36,7 +39,7 @@ export class Gym extends ex.Scene{
           height: wallThickness,
           color: ex.Color.Red,
           opacity: 0.2,
-          collisionType: ex.CollisionType.Fixed,
+          collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5
         });
 
@@ -47,32 +50,32 @@ export class Gym extends ex.Scene{
           height: wallThickness,
           color: ex.Color.Red,
           opacity: 0.2,
-          collisionType: ex.CollisionType.Fixed,
+          collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5
         });
 
         const leftWall = new ex.Actor({
-          x: 605,
+          x: 685,
           y: 650,
           width: wallThickness,
           height: 1000,
           color: ex.Color.Red,
           opacity: 0.2,
-          collisionType: ex.CollisionType.Fixed,
+          collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5,
-          rotation: Math.PI / 16,
+          rotation: Math.PI / 18,
         });
 
         const rightWall = new ex.Actor({
-          x: 1955,
+          x: 1870,
           y: 650,
           width: wallThickness,
           height: 1000,
           color: ex.Color.Red,
           opacity: 0.2,
-          collisionType: ex.CollisionType.Fixed,
+          collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5,
-          rotation: Math.PI / -16,
+          rotation: Math.PI / -18,
         });
 
         this.add(topWall);
