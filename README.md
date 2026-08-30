@@ -6,7 +6,7 @@
    The gym is the heart of the game. There, you'll find machines to help you improve your player's toughness, as you would do it for yourself.
    All the drills and exercises are explained for these athletes to be able to do them for themselves.
 
--> At this point, there is a city and gym. However, they are not usable yet.
+-> At this point, there is a city which leads you to a match. However, the game is still a prototype.
 
 -> As explained earlier, the game is written in Typescript and powered by excalibur.js. In order to start my game on a web browser, I use webpack. All the maps, even the upcoming ones, are drawn by myself with Tiled.
 
