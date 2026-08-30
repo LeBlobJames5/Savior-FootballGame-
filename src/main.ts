@@ -10,7 +10,9 @@ import { City } from './scenes/City';
 
 const game = new ex.Engine({
   displayMode: ex.DisplayMode.FillScreen,
-  suppressPlayButton: true
+  suppressPlayButton: true,
+  viewport: { width: 200, height: 200},
+  resolution: { width: 3000, height: 3000 }
 });
 
 game.add('menu', new MainMenu());

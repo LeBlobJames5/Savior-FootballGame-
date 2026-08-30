@@ -42,7 +42,7 @@ const walkUp = ex.Animation.fromSpriteSheet(
 
 
 export class Citizen extends ex.Actor{
-  public speed = 150;
+  public speed = 100;
   constructor() {
     super({
       x: 50,
