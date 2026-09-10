@@ -4,7 +4,6 @@ import { Resources } from '../resources';
 
 export class City extends ex.Scene {
 
-// Initialize the scene
   onInitialize(engine: ex.Engine) {
 
 // Create a city actor
@@ -23,6 +22,10 @@ export class City extends ex.Scene {
 citizen.pos = new ex.Vector(100, 100);
 
 this.add(citizen);
+
+
+
+
 
 // Create a match trigger actor
 const matchTrigger = new ex.Actor({
@@ -58,6 +61,53 @@ this.on('postupdate', () => {
 
     });
 
+
+
+
+
+    // Create a gym trigger actor
+    const gymTrigger = new ex.Actor({
+      x: 320,
+      y: 125,
+      width: 25,
+      height: 25,
+      collisionType: ex.CollisionType.Fixed
+    });
+
+    gymTrigger.graphics.use(
+    new ex.Rectangle({
+    width: 25,
+    height: 25,
+    color: ex.Color.Red,
+    opacity: 0.5
+  })
+
+);
+
+this.add(gymTrigger);
+
+// Check for collision between the citizen and the gym trigger
+this.on('postupdate', () => {
+
+      const distance = citizen.pos.distance(gymTrigger.pos);
+
+      if (distance < 25) {
+
+        engine.goToScene('gym');
+
+      }
+
+    });
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // Lock the camera to the citizen actor
 this.camera.strategy.lockToActor(citizen);
 

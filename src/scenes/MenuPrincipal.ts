@@ -34,23 +34,10 @@ const logo = new ex.Actor({
       }
     });
 
-    const gymButton = this.createImageButton({
-      x: centerX,
-      y: centerY * 1.25,
-      width: 360,
-      height: 100,
-      image: Resources.SalleDS,
-      onClick: () => {
-        engine.goToScene('gym');
-      }
-    });
-    
     playButton.anchor = ex.Vector.Half;
-    gymButton.anchor = ex.Vector.Half;
     
     this.add(logo);
     this.add(playButton);
-    this.add(gymButton);
 
     engine.on('resize', () => {
 

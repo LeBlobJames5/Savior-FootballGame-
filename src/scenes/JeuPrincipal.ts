@@ -12,9 +12,7 @@ export class GameScene extends ex.Scene {
 
   onInitialize(engine: ex.Engine) {
 
-    // ==========================================
-    // TERRAIN
-    // ==========================================
+// field dimensions
 
     const fieldWidth = 1200;
     const fieldHeight = 700;
@@ -24,7 +22,8 @@ export class GameScene extends ex.Scene {
       y: 0,
       width: fieldWidth,
       height: fieldHeight,
-      anchor: ex.Vector.Zero
+      anchor: ex.Vector.Zero,
+      collisionType: ex.CollisionType.PreventCollision
     });
 
     background.graphics.use(
@@ -37,12 +36,7 @@ export class GameScene extends ex.Scene {
 
     this.add(background);
 
-
-    // ==========================================
-    // LIGNES DU TERRAIN
-    // ==========================================
-
-    // Lignes verticales tous les 100 pixels
+    //Field Lines
 
     for (let x = 100; x < fieldWidth; x += 100) {
 
@@ -51,7 +45,8 @@ export class GameScene extends ex.Scene {
         y: 0,
         width: 3,
         height: fieldHeight,
-        anchor: ex.Vector.Zero
+        anchor: ex.Vector.Zero,
+        collisionType: ex.CollisionType.PreventCollision
       });
 
       line.graphics.use(
@@ -67,7 +62,7 @@ export class GameScene extends ex.Scene {
     }
 
 
-//Offesive Players Positions
+//Offensive Players Positions
 
     const bluePositions: {
   x: number;
@@ -111,16 +106,14 @@ export class GameScene extends ex.Scene {
 
 });
 
-
-    // ==========================================
-    // BALLON
-    // ==========================================
+// Ball
 
     this.ball = new ex.Actor({
       x: this.player.pos.x + 20,
       y: this.player.pos.y,
       width: 12,
-      height: 8
+      height: 8,
+      collisionType: ex.CollisionType.PreventCollision
     });
 
     this.ball.graphics.use(
@@ -180,25 +173,18 @@ export class GameScene extends ex.Scene {
 });
 
 
-    // ==========================================
-    // CAMÉRA
-    // ==========================================
+// Camera locked on user
 
     this.camera.strategy.lockToActor(this.player);
 
   }
 
 
-  // ==========================================
-  // UPDATE
-  // ==========================================
+// Frame update for user input and AI
 
   onPreUpdate(engine: ex.Engine, elapsed: number) {
 
-  // ========================================
-  // DÉPLACEMENT DU QB
-  // ========================================
-
+// User's movements
   const speed = 200;
 
   let direction = ex.Vector.Zero;
@@ -225,7 +211,7 @@ export class GameScene extends ex.Scene {
     direction.x += 1;
   }
 
-  // Évite d'aller plus vite en diagonale
+  // No speed boost when moving diagonally
   if (direction.magnitude > 0) {
 
     direction = direction.normalize();
@@ -237,20 +223,16 @@ export class GameScene extends ex.Scene {
   }
 
 
-  // ========================================
-  // BALLON
-  // ========================================
+ //Ball follows the ball carrier
 
   this.ball.pos.x = this.player.pos.x + 20;
   this.ball.pos.y = this.player.pos.y;
 
-// ========================================
-// IA DE L'ATTAQUE
-// ========================================
+//Attackers AI
 
 this.bluePlayers.forEach((blue) => {
 
-  // Le QB est contrôlé manuellement
+  // Skip the QB since it's controlled by the player
   if (blue.role === 'QB') {
     return;
   }
@@ -262,24 +244,41 @@ this.bluePlayers.forEach((blue) => {
   );
 
 });
- // ========================================
-// IA DE LA DÉFENSE
-// ========================================
+
+
+//WR receivers assigned to CB defenders
+const receivers = this.bluePlayers.filter((player) => player.role === 'WR');
+
+//Defenders AI
+const cornerbacks = this.redPlayers.filter((player) => player.role === 'CB');
 
 this.redPlayers.forEach((red) => {
+
+  let assignedReceiver: FootballPlayer | undefined = undefined;
+
+  if (red.role === 'CB') {
+    const cbIndex = cornerbacks.indexOf(red);
+
+    if (cbIndex === 0) { assignedReceiver = receivers[0];
+
+
+    } else {
+
+      assignedReceiver = receivers[receivers.length - 1]; 
+    } 
+  }
 
   FootballAI.updateDefense(
     red,
     this.player,
-    elapsed
+    elapsed,
+    assignedReceiver
   );
 
 });
 
 
-  // ========================================
-  // PLAQUAGE
-  // ========================================
+//Tackling detection
 
   for (const red of this.redPlayers) {
 
@@ -288,41 +287,31 @@ this.redPlayers.forEach((red) => {
 
     if (distance < 25) {
 
-      console.log("PLAQUAGE !");
-
-      // Replacer le QB
+      //Replace user and defenders to their initial positions
       this.player.pos = new ex.Vector(440, 350);
 
-      // Positions initiales des défenseurs
-      const positions = [
-        { x: 600, y: 290 },
-        { x: 600, y: 330 },
-        { x: 600, y: 370 },
-        { x: 600, y: 410 },
+      this.bluePlayers.forEach((bluePlayer) => {
 
-        { x: 670, y: 300 },
-        { x: 670, y: 350 },
-        { x: 670, y: 400 },
+        bluePlayer.pos = bluePlayer.homePosition.clone();
+        
+      }
+    );
 
-        { x: 700, y: 180 },
-        { x: 700, y: 520 },
 
-        { x: 800, y: 280 },
-        { x: 800, y: 420 }
-      ];
 
-      this.redPlayers.forEach((redDefender, index) => {
+      this.redPlayers.forEach((redPlayer) => {
+        redPlayer.pos = redPlayer.homePosition.clone();
+      }
+  );
 
-        redDefender.pos = new ex.Vector(
-          positions[index].x,
-          positions[index].y
-        );
+  //Ball reset
 
-      });
+            this.ball.pos.x = this.player.pos.x + 20;
+            this.ball.pos.y = this.player.pos.y;
 
-            break;
-            }
-
-        }
+        break;
+      }
     } 
+  }
 }
+    

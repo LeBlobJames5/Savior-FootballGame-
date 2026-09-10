@@ -18,6 +18,12 @@ export class FootballPlayer extends ex.Actor {
 
   role: FootballRole;
 
+
+  // Position de départ du joueur
+  homePosition: ex.Vector;
+  
+  
+  
   constructor(
     x: number,
     y: number,
@@ -29,10 +35,13 @@ export class FootballPlayer extends ex.Actor {
       x: x,
       y: y,
       width: 30,
-      height: 30
+      height: 30,
+      collisionType: ex.CollisionType.PreventCollision
     });
 
     this.role = role;
+
+    this.homePosition = new ex.Vector(x, y);
 
     this.graphics.use(
       new ex.Rectangle({

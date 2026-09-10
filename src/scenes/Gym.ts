@@ -10,7 +10,7 @@ import { MainMenu } from './MenuPrincipal';
 export class Gym extends ex.Scene{
      onInitialize(engine: ex.Engine) {
         const BigManThing = new Player();
-        BigManThing.pos= new ex.Vector(1880,970);
+        BigManThing.pos= new ex.Vector(1281,360);
         BigManThing.z = 10;
 
         const gymBackground = new ex.Actor({
@@ -18,23 +18,22 @@ export class Gym extends ex.Scene{
       y: engine.drawHeight / 2,
       width: 800,
       height: 500,
-      color: ex.Color.Green
     });
 
     const gymSprite = Resources.Gym.toSprite();
-    gymSprite.width = 1500;
-    gymSprite.height = 1200;
+    gymSprite.width = 3100;
+    gymSprite.height = 3000;
     gymBackground.graphics.use(gymSprite);
         
         this.add(BigManThing);
         this.add(gymBackground);
-        this.engine.backgroundColor = ex.Color.fromHex('#85CE64');
+        //this.engine.backgroundColor = ex.Color.fromHex('#85CE64');
 
         const wallThickness = 30;
 
         const topWall = new ex.Actor({
           x: 1280,
-          y: 280,
+          y: 323,
           width: 1200,
           height: wallThickness,
           color: ex.Color.Red,
@@ -45,7 +44,7 @@ export class Gym extends ex.Scene{
 
         const bottomWall = new ex.Actor({
           x: 1280,
-          y: 1155,
+          y: 1115,
           width: 1550,
           height: wallThickness,
           color: ex.Color.Red,
@@ -55,7 +54,7 @@ export class Gym extends ex.Scene{
         });
 
         const leftWall = new ex.Actor({
-          x: 685,
+          x: 823,
           y: 650,
           width: wallThickness,
           height: 1000,
@@ -63,11 +62,10 @@ export class Gym extends ex.Scene{
           opacity: 0.2,
           collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5,
-          rotation: Math.PI / 18,
         });
 
         const rightWall = new ex.Actor({
-          x: 1870,
+          x: 1737,
           y: 650,
           width: wallThickness,
           height: 1000,
@@ -75,7 +73,6 @@ export class Gym extends ex.Scene{
           opacity: 0.2,
           collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
           z: 5,
-          rotation: Math.PI / -18,
         });
 
         this.add(topWall);

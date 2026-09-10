@@ -3,14 +3,13 @@ import { FootballPlayer } from './Bot';
 
 export class FootballAI {
 
-  // ==========================================
-  // IA DÉFENSIVE
-  // ==========================================
+//Defenders AI
 
   static updateDefense(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
-    elapsed: number
+    elapsed: number,
+    assignedReceiver?: FootballPlayer
   ) {
 
     switch (player.role) {
@@ -23,18 +22,42 @@ export class FootballAI {
         this.updateLB(player, ballCarrier, elapsed);
         break;
 
-      case 'CB':
-        this.updateCB(player, ballCarrier, elapsed);
+      case 'CB': 
+        this.updateCB( player, ballCarrier, elapsed, assignedReceiver ); 
         break;
-
-      case 'S':
-        this.updateSafety(player, ballCarrier, elapsed);
+      
+      
+      case 'S': 
+        this.updateSafety(player, ballCarrier, elapsed); 
         break;
 
     }
 
   }
 
+  private static moveTowards(
+    player: FootballPlayer, 
+    target: ex.Vector, 
+    speed: number, 
+    elapsed: number,
+    stopDistance: number = 5
+  ) {
+
+
+
+
+    const direction = target.sub(player.pos);
+
+    if (direction.magnitude <= stopDistance) {
+      return;
+    }
+
+    const movement = direction  
+      .normalize()
+      .scale(speed * elapsed / 1000);
+
+    player.pos = player.pos.add(movement);
+  }
 
   // ==========================================
   // DEFENSIVE LINE
@@ -46,24 +69,36 @@ export class FootballAI {
     elapsed: number
   ) {
 
-    // Pour l'instant les DL se dirigent vers le QB
-    // pour simuler la pression.
 
-    const direction = ballCarrier.pos
-      .sub(player.pos);
+    const target = new ex.Vector(
+      player.homePosition.x - 80, 
+      player.homePosition.y
+    );
 
-    if (direction.magnitude > 35) {
+    const distanceToQB =
+     player.pos.distance(ballCarrier.pos);
 
-      player.pos = player.pos.add(
-        direction.normalize().scale(
-          100 * elapsed / 1000
-        )
+    if (distanceToQB > 170) {
+
+      this.moveTowards(
+        player, 
+        ballCarrier.pos, 
+        85, 
+        elapsed,
+        35
       );
 
+    } else {
+
+      this.moveTowards(
+        player,
+        target,
+        80,
+        elapsed,
+        10
+      );
     }
-
   }
-
 
   // ==========================================
   // LINEBACKER
@@ -75,21 +110,37 @@ export class FootballAI {
     elapsed: number
   ) {
 
-    const direction = ballCarrier.pos
-      .sub(player.pos);
+    const targetX = ballCarrier.pos.x + 100;
 
-    if (direction.magnitude > 35) {
+    const target = new ex.Vector(
+      targetX,
+      player.homePosition.y
+    );
 
-      player.pos = player.pos.add(
-        direction.normalize().scale(
-          120 * elapsed / 1000
-        )
+    if (Math.abs(player.pos.x - targetX) > 20) {
+
+      this.moveTowards(
+        player,
+        target,
+        55,
+        elapsed,
+        15
       );
-
     }
 
-  }
+    const distanceToQB = player.pos.distance(ballCarrier.pos);
 
+    if (distanceToQB < 110) {
+
+      this.moveTowards(
+        player,
+        ballCarrier.pos, 
+        110,
+        elapsed,
+        30
+      );
+    }
+  }
 
   // ==========================================
   // CORNERBACK
@@ -98,29 +149,56 @@ export class FootballAI {
   private static updateCB(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
-    elapsed: number
+    elapsed: number,
+    receiver?: FootballPlayer
   ) {
 
-    // Pour l'instant, les CB restent relativement
-    // proches de leur position.
+  if (receiver) {
+    const target = new ex.Vector(
+      receiver.pos.x + 25, 
+      receiver.pos.y
+    );
 
-    const direction = ballCarrier.pos
-      .sub(player.pos);
+    this.moveTowards(
+      player,
+      target,
+      95,
+      elapsed,
+      15
+    );
 
-    if (direction.magnitude > 150) {
+    const disanceToQB = player.pos.distance(ballCarrier.pos);
 
-      player.pos = player.pos.add(
-        direction.normalize().scale(
-          80 * elapsed / 1000
-        )
+    if (disanceToQB < 70) {
+
+      this.moveTowards(
+        player,
+        ballCarrier.pos,
+        100,
+        elapsed,
+        25
       );
-
     }
 
+  } else {
+
+    const target = new ex.Vector(
+      player.homePosition.x, 
+      player.homePosition.y
+    );
+
+    this.moveTowards(
+      player,
+      target,
+      60,
+      elapsed,
+      10
+    );
   }
+}
 
 
-  // ==========================================
+
   // SAFETY
   // ==========================================
 
@@ -130,24 +208,32 @@ export class FootballAI {
     elapsed: number
   ) {
 
-    const direction = ballCarrier.pos
-      .sub(player.pos);
+    const target = new ex.Vector(
+      ballCarrier.pos.x + 250,
+      player.homePosition.y
+    );
 
-    // Les safeties restent loin du porteur
-    // mais peuvent intervenir s'il avance.
+    this.moveTowards(
+      player,
+      target,
+      50,
+      elapsed,
+      30
+    );
 
-    if (direction.magnitude > 200) {
+    const distanceToQB = player.pos.distance(ballCarrier.pos);
 
-      player.pos = player.pos.add(
-        direction.normalize().scale(
-          70 * elapsed / 1000
-        )
+    if (distanceToQB < 130) {
+
+      this.moveTowards(
+        player,
+        ballCarrier.pos,
+        100,
+        elapsed,
+        30
       );
-
     }
-
-  }
-
+}
 
   // ==========================================
   // IA OFFENSIVE
@@ -192,10 +278,19 @@ export class FootballAI {
   ) {
 
     // Les WR avancent vers la droite.
+    const speed = 110;
 
-    player.pos.x += 120 * elapsed / 1000;
+    player.pos.x += speed * elapsed / 1000;
 
+    const TargetY = player.homePosition.y;
+
+    const yDifference = TargetY - player.pos.y;
+
+    if (Math.abs(yDifference) > 5) {
+
+      player.pos.y += Math.sign(yDifference) * 30 * elapsed / 1000;
   }
+}
 
 
   // ==========================================
@@ -208,18 +303,20 @@ export class FootballAI {
     elapsed: number
   ) {
 
-    // Le RB suit le QB horizontalement.
+    const target = new ex.Vector(
+      quarterback.pos.x + 70,
+      quarterback.pos.y
+    )
 
-    const targetX = quarterback.pos.x - 60;
-
-    if (player.pos.x < targetX) {
-
-      player.pos.x +=
-        100 * elapsed / 1000;
-
-    }
-
+    this.moveTowards(
+      player,
+      target, 
+      120,
+      elapsed,
+      5
+    );
   }
+
 
 
   // ==========================================
@@ -231,11 +328,16 @@ export class FootballAI {
     elapsed: number
   ) {
 
-    // Pour l'instant, l'O-Line avance légèrement
-    // avec le jeu.
+    player.pos.x += 25 * elapsed / 1000;
 
-    player.pos.x +=
-      20 * elapsed / 1000;
+    const targetY = player.homePosition.y;
+
+    const differenceY = targetY - player.pos.y;
+
+    if (Math.abs(differenceY) > 3) {
+
+      player.pos.y += Math.sign(differenceY) * 20 * elapsed / 1000;
+    }
 
   }
 
