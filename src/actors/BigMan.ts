@@ -13,7 +13,7 @@ export class Player extends ex.Actor{
       collisionType: ex.CollisionType.Active,
     }); 
   }
-  //mouvements du joueur
+  //Player's movements
   
   private moveUpward(delta: number) {
     const seconds = delta / 1000;

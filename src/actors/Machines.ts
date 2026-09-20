@@ -1,30 +1,33 @@
-import * as ex from 'excalibur';
+import * as ex from "excalibur";
+import { Exercise } from "../data/Exercises";
 
-type MachineOptions = {
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  sprite: ex.Sprite;
-};
+export class GymMachine extends ex.Actor {
 
-export class Machines extends ex.Actor {
-  public machineName: string;
+    public machineName: string;
+    public exercises: Exercise[];
 
-  constructor(options: MachineOptions) {
-    super({
-      x: options.x,
-      y: options.y,
-      width: options.width,
-      height: options.height,
-      collisionType: ex.CollisionType.Fixed
-    });
+    constructor(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        machineName: string,
+        exercises: Exercise[]
+    ) {
 
-    this.machineName = options.name;
+        super({
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            // Zone visible pour debug
+            color: ex.Color.Red,
+            opacity: 0.25,
+            //No physical collision with the player
+            collisionType: ex.CollisionType.PreventCollision
+        });
 
-    options.sprite.width = options.width;
-    options.sprite.height = options.height;
-    this.graphics.use(options.sprite);
-  }
+        this.machineName = machineName;
+        this.exercises = exercises;
+    }
 }

@@ -4,5 +4,7 @@ export const BigStats = {
     Strength: 1,
     Speed: 5,
     Stamina: 1,
-    Toughness: 0
+    Toughness: 0,
+    Energy: 100,
+    MaxEnergy: 100
 }
