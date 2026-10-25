@@ -212,7 +212,7 @@ export class City extends ex.Scene {
       z: 5
     });
 
-    const StadiumTop = new ex.Actor({
+    const WallStadiumTop = new ex.Actor({
       x: 1120,
       y: 310,
       width: 100,
@@ -223,7 +223,7 @@ export class City extends ex.Scene {
       z: 5
     });
 
-    const StadiumBottom = new ex.Actor({
+    const WallStadiumBottom = new ex.Actor({
       x: 1120,
       y: 845,
       width: 100,
@@ -234,13 +234,97 @@ export class City extends ex.Scene {
       z: 5,
     });
 
+    const WallHouse11 = new ex.Actor({
+      x: 184,
+      y: 370,
+      width: 110,
+      height: 265,
+      color: ex.Color.Green,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouse12 = new ex.Actor({
+      x: 350,
+      y: 300,
+      width: 225,
+      height: 125,
+      color: ex.Color.Red,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouse2 = new ex.Actor({
+      x: 295,
+      y: 685,
+      width: 335,
+      height: 190,
+      color: ex.Color.Green,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouse3 = new ex.Actor({
+      x: 768,
+      y: 685,
+      width: 448,
+      height: 190,
+      color: ex.Color.Blue,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouse4 = new ex.Actor({
+      x: 768,
+      y: 375,
+      width: 448,
+      height: 270,
+      color: ex.Color.Black,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouseBottom1 = new ex.Actor({
+      x: 770,
+      y: 870,
+      width: 480,
+      height: 50,
+      color: ex.Color.Gray,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
+    const WallHouseBottom2 = new ex.Actor({
+      x: 295,
+      y: 870,
+      width: 335,
+      height: 140,
+      color: ex.Color.Yellow,
+      opacity: 0.5,
+      collisionType: ex.CollisionType.Fixed,
+      z: 5,
+    });
+
     this.add(WallCityBottom);
     this.add(WallGym1);
     this.add(WallGym2);
     this.add(WallCityLeft);
     this.add(WallCityRight);
-    this.add(StadiumTop);
-    this.add(StadiumBottom)
+    this.add(WallStadiumTop);
+    this.add(WallStadiumBottom);
+    this.add(WallHouse11);
+    this.add(WallHouse12);
+    this.add(WallHouse2);
+    this.add(WallHouse3);
+    this.add(WallHouse4);
+    this.add(WallHouseBottom1);
+    this.add(WallHouseBottom2)
 
 
 

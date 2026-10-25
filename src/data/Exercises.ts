@@ -196,7 +196,7 @@ export const SledPush: Exercise = {
     name: "Sled Push",
     description: "Un exercice de puissance qui sollicite fortement les jambes \n et développe la force et l'endurance.",
     startingPosition: "Place-toi derrière le sled et saisis les poignées. Penche \n légèrement ton corps vers l'avant en gardant le dos droit.",
-    execution: "Pousse le sled vers l'avant en utilisant principalement tes \n jambes. Maintiens une poussée constante jusqu'à avoir parcouru la distance prévue.",
+    execution: "Pousse le sled vers l'avant en utilisant principalement tes \n jambes. Maintiens une poussée constante jusqu'à avoir \n parcouru la distance prévue.",
     duration: 10,
 
     stats: {
