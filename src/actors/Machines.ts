@@ -20,11 +20,9 @@ export class GymMachine extends ex.Actor {
             y: y,
             width: width,
             height: height,
-            // Zone visible pour debug
             color: ex.Color.Red,
-            opacity: 0.25,
-            //No physical collision with the player
-            collisionType: ex.CollisionType.PreventCollision
+            opacity: 0,
+            collisionType: ex.CollisionType.Fixed
         });
 
         this.machineName = machineName;

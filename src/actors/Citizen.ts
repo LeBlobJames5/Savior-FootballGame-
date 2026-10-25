@@ -2,45 +2,7 @@ import * as ex from 'excalibur';
 import { BigStats } from '../State/stats';
 import { Resources } from '../resources';
 
-
-const citizenSpriteSheet = ex.SpriteSheet.fromImageSource({
-    image: Resources.Citizen,
-    grid: {
-        rows: 3,
-        columns: 4,
-        spriteWidth: 16,
-        spriteHeight: 17.3
-    }
-});
-
-const walkDown = ex.Animation.fromSpriteSheet(
-    citizenSpriteSheet,
-    [0, 4, 8],
-    150
-);
-
-const walkRight = ex.Animation.fromSpriteSheet(
-    citizenSpriteSheet,
-    [1, 5, 9],
-    150
-);
-
-
-const walkLeft = ex.Animation.fromSpriteSheet(
-    citizenSpriteSheet,
-    [3, 7, 11],
-    150
-);
-
-const walkUp = ex.Animation.fromSpriteSheet(
-    citizenSpriteSheet,
-    [2, 6, 10],
-    150
-);
-
-
-
-
+//Citizen class that extends the Excalibur Actor class. This class represents a citizen character in the game and handles its movement and animations based on user input.
 export class Citizen extends ex.Actor{
   public speed = 100;
   static height: number;
@@ -58,8 +20,8 @@ export class Citizen extends ex.Actor{
 this.graphics.use(walkDown);
 
 }
-  //mouvements du joueur
-  
+
+  //Player movement functions
   private moveUpward(delta: number) {
     const seconds = delta / 1000;
     this.pos.y -= this.speed * seconds;
@@ -118,3 +80,41 @@ this.graphics.use(walkDown);
     }
   }
 }
+
+//Citzen sprite sheet and animations for walking in different directions. The sprite sheet is created from an image source, and the animations are defined using specific frames from the sprite sheet.
+const citizenSpriteSheet = ex.SpriteSheet.fromImageSource({
+    image: Resources.Citizen,
+    grid: {
+        rows: 3,
+        columns: 4,
+        spriteWidth: 16,
+        spriteHeight: 17.3
+    }
+});
+
+const walkDown = ex.Animation.fromSpriteSheet(
+    citizenSpriteSheet,
+    [0, 4, 8],
+    150
+);
+
+const walkRight = ex.Animation.fromSpriteSheet(
+    citizenSpriteSheet,
+    [1, 5, 9],
+    150
+);
+
+
+const walkLeft = ex.Animation.fromSpriteSheet(
+    citizenSpriteSheet,
+    [3, 7, 11],
+    150
+);
+
+const walkUp = ex.Animation.fromSpriteSheet(
+    citizenSpriteSheet,
+    [2, 6, 10],
+    150
+);
+
+

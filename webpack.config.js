@@ -2,19 +2,31 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+
   entry: './src/main.ts',
 
   module: {
     rules: [
+
+      // Images
       {
         test: /\.(png|jpg|jpeg|gif|svg)$/i,
         type: 'asset/resource'
       },
+
+      // TypeScript
       {
         test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/
+      },
+
+      // Musique / sons
+      {
+        test: /\.(mp3|wav|ogg)$/i,
+        type: 'asset/resource'
       }
+
     ]
   },
 
@@ -41,4 +53,5 @@ module.exports = {
       template: './src/index.html',
     }),
   ],
+
 };
