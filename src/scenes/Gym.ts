@@ -26,9 +26,18 @@ export class Gym extends ex.Scene{
     private enduranceLabel!: ex.Label;
     private energyLabel!: ex.Label;
 
+    // Zone de jeu de référence : la caméra l'adapte à la taille de l'écran.
+    private readonly designViewWidth = 1600;
+    private readonly designViewHeight = 1200;
+    private readonly gymCenter = new ex.Vector(1360, 720);
+
     override onInitialize(engine: ex.Engine) {
 
     MusicManager.play(Resources.GymCityMusic);
+
+    // La caméra conserve la même composition, quelle que soit la résolution.
+    this.camera.pos = this.gymCenter.clone();
+    this.updateResponsiveCamera(engine);
      
     this.player = new Citizen();
     this.player.z = 5;
@@ -57,10 +66,10 @@ this.player.on("collisionend", (evt) => {
         
         //Meadow Sprite
     const gymMeadow = new ex.Actor({
-        x: engine.drawWidth / 2,
-        y: engine.drawHeight / 2,
-        width: 800,
-        height: 500,
+        x: 1550,
+        y: 1500,
+        width: 3100,
+        height: 3000,
     })
 
     this.add(gymMeadow);
@@ -72,10 +81,10 @@ this.player.on("collisionend", (evt) => {
 
         //Gym Sprite
     const gymBackground = new ex.Actor({
-        x: engine.drawWidth / 2,
-        y: engine.drawHeight / 2,
-        width: 800,
-        height: 500,
+        x: 1550,
+        y: 1500,
+        width: 3100,
+        height: 3000,
     });
 
     this.add(gymBackground);
@@ -285,6 +294,8 @@ this.squatRack = new GymMachine(
 //Override onPreUpdate to check if the player is in the detection zone of any machine
 override onPreUpdate(engine: ex.Engine, elapsed: number) {
 
+    this.updateResponsiveCamera(engine);
+
     const machines = [
         this.squatRack,
         this.treadmill,
@@ -367,5 +378,22 @@ override onPreUpdate(engine: ex.Engine, elapsed: number) {
 
 override onActivate() {
         this.player.pos = new ex.Vector(1268, 350);
+        this.camera.pos = this.gymCenter.clone();
+    }
+
+    /**
+     * Ajuste le zoom à chaque frame : utile lorsque la fenêtre est redimensionnée.
+     * La caméra garde le gym entier dans le champ sans étirer les sprites.
+     */
+    private updateResponsiveCamera(engine: ex.Engine): void {
+        const viewWidth = Math.max(1, engine.drawWidth);
+        const viewHeight = Math.max(1, engine.drawHeight);
+
+        const zoomX = viewWidth / this.designViewWidth;
+        const zoomY = viewHeight / this.designViewHeight;
+
+        // On choisit le plus petit zoom pour que la zone de référence reste visible.
+        this.camera.zoom = Math.min(zoomX, zoomY);
+        this.camera.pos = this.gymCenter.clone();
     }
 }
