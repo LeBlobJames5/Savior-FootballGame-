@@ -31,7 +31,7 @@ export function MatchResults(
     return el;
   };
 
-  // Fond sombre
+  //Dark background
   const backdrop = new ex.ScreenElement({ x: 0, y: 0, z: 1000 });
   backdrop.anchor = ex.Vector.Zero;
   backdrop.graphics.use(
@@ -42,10 +42,8 @@ export function MatchResults(
     })
   );
 
-  // Résultats
   const results = makeText(text, Math.max(24, w / 2 - 360), h * 0.04, fontSize);
 
-  // Bouton (cliquable)
   const btnW = Math.min(420, w - 40);
   const btnH = 56;
   const btnX = w / 2 - btnW / 2;

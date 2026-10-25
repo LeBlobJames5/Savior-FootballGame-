@@ -1,8 +1,8 @@
 export const BigStats = {
 
-    Strength: 100,
-    Speed: 100,
-    Endurance: 100,
+    Strength: 30,
+    Speed: 30,
+    Endurance: 30,
 
     Energy: 100,
 

@@ -12,6 +12,7 @@ import RunBlue from './assets/BlueRun.png'
 import StaticRed from './assets/RedStatic.png'
 import RunRed from './assets/RedRun.png'
 import StadiumBackground from './assets/StadiumBackground.png'
+import Ball from './assets/Ball.png'
 
 
 export const Resources = {
@@ -27,7 +28,8 @@ export const Resources = {
   ImgRB: new ex.ImageSource(RunBlue),
   ImgSR: new ex.ImageSource(StaticRed),
   ImgRR: new ex.ImageSource(RunRed),
-  StadiumBackgroundImg: new ex.ImageSource(StadiumBackground)
+  StadiumBackgroundImg: new ex.ImageSource(StadiumBackground),
+  BallImg: new ex.ImageSource(Ball)
 };
 
 class PersoLoader extends ex.Loader {
@@ -48,5 +50,6 @@ export const ResourceLoader = new PersoLoader([Resources.Logo,
   Resources.ImgRB,
   Resources.ImgSR,
   Resources.ImgRR,
-  Resources.StadiumBackgroundImg
+  Resources.StadiumBackgroundImg,
+  Resources.BallImg
 ]);

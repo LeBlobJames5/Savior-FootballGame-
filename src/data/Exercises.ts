@@ -19,7 +19,7 @@ export interface Exercise {
 //Trap bar exercises description
 
 export const TrapBarDeadlift: Exercise = {
-    name: "Trap Bar Deadlift",
+    name: "Soulevé de terre à la Trap Bar",
     description: "Un exercice de force qui sollicite principalement les jambes, \n les fessiers et le dos.",
     startingPosition: "Place-toi au centre de la trap bar, les pieds écartés à \n largeur d'épaules. Garde le dos droit, plie légèrement les \n genoux et saisis les poignées.",
     execution: "Pousse dans tes jambes pour te redresser tout en gardant le \n dos droit. Monte jusqu'à être complètement debout, puis \n redescends la trap bar de manière contrôlée.",
@@ -66,7 +66,7 @@ export const Squat: Exercise = {
 };
 
 export const BenchPress: Exercise = {
-    name: "Bench Press",
+    name: "Développé couché",
     description: "Un exercice de poussée qui développe principalement les \n pectoraux, les triceps et les épaules.",
     startingPosition: "Allonge-toi sur le banc, les pieds au sol et les mains \n légèrement plus écartées que les épaules sur la barre.",
     execution: "Décroche la barre et descends-la lentement vers la poitrine. \n Pousse ensuite la barre vers le haut jusqu'à tendre les bras \n sans verrouiller brutalement les coudes.",
@@ -81,7 +81,7 @@ export const BenchPress: Exercise = {
 };
 
 export const OverheadPress: Exercise = {
-    name: "Overhead Press",
+    name: "Développé militaire",
     description: "Un exercice de poussée verticale qui développe principalement \n les épaules et les triceps.",
     startingPosition: "Tiens la barre devant tes épaules, les mains légèrement plus \n écartées que les épaules. Garde le dos droit et les \n abdominaux contractés.",
     execution: "Pousse la barre au-dessus de ta tête jusqu'à tendre les bras. \n Redescends ensuite la barre de manière contrôlée jusqu'aux \n épaules.",
@@ -96,7 +96,7 @@ export const OverheadPress: Exercise = {
 };
 
 export const BarbellRow: Exercise = {
-    name: "Barbell Row",
+    name: "Tirage à la barre",
     description: "Un exercice de tirage qui développe principalement le dos et \n les biceps.",
     startingPosition: "Tiens la barre devant toi et penche ton buste vers l'avant en \n gardant le dos droit. Garde les genoux légèrement fléchis.",
     execution: "Tire la barre vers ton abdomen en rapprochant les coudes du \n corps. Redescends ensuite la barre lentement jusqu'à la \n position de départ.",
@@ -111,7 +111,7 @@ export const BarbellRow: Exercise = {
 };
 
 export const PullUps: Exercise = {
-    name: "Pull ups",
+    name: "Tractions",
     description: "Un exercice de tirage au poids du corps qui développe \n principalement le dos, les biceps et la force de préhension.",
     startingPosition: "Saisis la barre de traction avec les mains légèrement plus \n écartées que les épaules. Suspends-toi avec les bras tendus \n et garde le corps gainé.",
     execution: "Tire ton corps vers le haut en rapprochant ta poitrine de la \n barre. Redescends ensuite de manière contrôlée jusqu'à avoir \n les bras tendus.",
@@ -128,7 +128,7 @@ export const PullUps: Exercise = {
 //Treadmill exercise description
 
 export const Running: Exercise = {
-    name: "Running",
+    name: "Course",
     description:"Une course à intensité modérée qui développe principalement \n l'endurance cardiovasculaire.",
     startingPosition:"Monte sur le tapis et adopte une position droite, légèrement \n inclinée vers l'avant.",
     execution:"Cours à un rythme régulier et confortable pendant toute la \n durée de l'exercice.",
@@ -158,7 +158,7 @@ export const Sprint: Exercise = {
 };
 
 export const IntervalRunning: Exercise = {
-    name: "Interval Running",
+    name: "Course par intervalles",
     description: "Une course alternant des phases rapides et des phases de \n récupération afin de développer l'endurance et la vitesse.",
     startingPosition: "Monte sur le tapis et commence par adopter un rythme léger.",
     execution: "Alterne des périodes de course rapide avec des périodes de \n récupération plus lentes jusqu'à la fin de l'exercice.",
@@ -175,8 +175,7 @@ export const IntervalRunning: Exercise = {
 //Rowing machine exercises description
 
 export const Rowing: Exercise = {
-    name: "Rowing",
-
+    name: "Rameur",
     description:"Un exercice cardiovasculaire complet qui sollicite les jambes, \n le dos et les bras.",
     startingPosition:"Assieds-toi sur le rameur, place tes pieds dans les supports \n et saisis la poignée avec les deux mains. Garde le dos droit.",
     execution:"Pousse d'abord avec les jambes, puis tire la poignée vers ton \n abdomen. Reviens ensuite progressivement à la position \n de départ.",
@@ -193,7 +192,7 @@ export const Rowing: Exercise = {
 //Sled exercises description
 
 export const SledPush: Exercise = {
-    name: "Sled Push",
+    name: "Poussée de Sled",
     description: "Un exercice de puissance qui sollicite fortement les jambes \n et développe la force et l'endurance.",
     startingPosition: "Place-toi derrière le sled et saisis les poignées. Penche \n légèrement ton corps vers l'avant en gardant le dos droit.",
     execution: "Pousse le sled vers l'avant en utilisant principalement tes \n jambes. Maintiens une poussée constante jusqu'à avoir \n parcouru la distance prévue.",
@@ -208,7 +207,7 @@ export const SledPush: Exercise = {
 };
 
 export const SledDrag: Exercise = {
-    name: "Sled Drag",
+    name: "Tirage de Sled",
     description: "Un exercice qui consiste à tirer une charge vers soi. Il \n développe principalement la force des jambes, du dos et \n l'endurance musculaire.",
     startingPosition: "Place-toi face à l'opposé du sled et saisis la sangle ou la \n corde attachée au traîneau. Garde le dos droit et les genoux \n légèrement fléchis.",
     execution: "Recule progressivement en tirant le sled vers toi. Maintiens \n une posture stable et continue jusqu'à avoir \n parcouru la \n distance prévue.",
@@ -225,7 +224,7 @@ export const SledDrag: Exercise = {
 //Elliptical bike exercises description
 
 export const Elliptical: Exercise = {
-    name: "Elliptical Bike",
+    name: "Vélo elliptique",
     description: "Un exercice cardiovasculaire qui développe principalement \n l'endurance tout en sollicitant l'ensemble du corps.",
     startingPosition: "Monte sur l'elliptique, place tes pieds sur les plateformes \n et saisis les poignées.",
     execution: "Effectue un mouvement régulier avec les jambes et les bras \n tout en maintenant un rythme constant.",

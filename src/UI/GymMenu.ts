@@ -4,9 +4,8 @@ import { GymMachine } from "../actors/Machines";
 import { BigStats } from "../State/stats";
 
 export class GymMenu {
-
+    //Class properties
     private scene: ex.Scene;
-
     private background!: ex.Actor;
     private currentMachine?: GymMachine;
 
@@ -25,7 +24,6 @@ export class GymMenu {
         });
 
         this.background.z = 100;
-
         this.scene.add(this.background);
 
     const label = new ex.Label({
@@ -37,12 +35,10 @@ export class GymMenu {
                 color: ex.Color.White,
                 textAlign: ex.TextAlign.Left
             }),
-
             anchor: ex.vec(0.5, 0.5),
         });
-
-        this.background.addChild(label);
-    }
+    this.background.addChild(label);
+}
 
 
 
@@ -62,23 +58,19 @@ export class GymMenu {
         if (!this.currentMachine) {
             return;
         }
-
-
         this.currentMachine = undefined;
-
 
         this.updateMenu();
     }   
 
 
-        private updateMenu() {
+    private updateMenu() {
 
         for (const child of [...this.background.children]) {
             this.background.removeChild(child);
         }
-
+        //If no machine, displays messages and stops
         if (!this.currentMachine) {
-
             const label = new ex.Label({
                 text: "Mmmhhh pourquoi pas une autre ?",
                 pos: ex.vec(-290, -430),
@@ -97,21 +89,18 @@ export class GymMenu {
             return;
         }
 
-        const title = new ex.Label({
-            text: this.currentMachine.machineName,
-            pos: ex.vec(0, -120),
-            font: new ex.Font({
-                size: 28,
-                family: "monospace",
-                color: ex.Color.White,
-                textAlign: ex.TextAlign.Center
-            }),
-            anchor: ex.vec(0.5, 0.5)
-            });
-        
-
+    const title = new ex.Label({
+        text: this.currentMachine.machineName,
+        pos: ex.vec(0, -120),
+        font: new ex.Font({
+            size: 28,
+            family: "monospace",
+            color: ex.Color.White,
+            textAlign: ex.TextAlign.Center
+        }),
+        anchor: ex.vec(0.5, 0.5)
+    });
         this.background.addChild(title);
-
 
     //GymMenu buttons
         this.currentMachine.exercises.forEach((exercise, index) => {
@@ -141,11 +130,10 @@ export class GymMenu {
     button.on("pointerdown", () => {
         this.showExercise(exercise);
     });
-
     this.background.addChild(button);
-});
-    }
-
+    });
+}
+    
     private showExercise(exercise: Exercise) {
 
     //Empties the menu
@@ -167,7 +155,6 @@ export class GymMenu {
     });
 
     this.background.addChild(title);
-
 
     // Description of the exercise
     const descriptionTitle = new ex.Label({
@@ -198,7 +185,6 @@ export class GymMenu {
 
     this.background.addChild(description);
 
-
     // Starting Position
     const startingTitle = new ex.Label({
         text: "POSITION DE DÉPART",
@@ -227,7 +213,6 @@ export class GymMenu {
     });
 
     this.background.addChild(startingPosition);
-
 
     // Execution of the exercise
     const executionTitle = new ex.Label({
@@ -258,7 +243,6 @@ export class GymMenu {
 
     this.background.addChild(execution);
 
-
     //Duration of the exercise
     const duration = new ex.Label({
         text: `Durée : ${exercise.duration} secondes`,
@@ -274,7 +258,9 @@ export class GymMenu {
 
     this.background.addChild(duration);
 
+    //Returns the cost of the exercise, or 0 if it is not defined
     const energyCost = exercise.stats.energyCost ?? 0;
+    //Displays energy remaining et exercise cost
     const energyLabel = new ex.Label({
         text: `Énergie : ${BigStats.Energy} / ${BigStats.MaxEnergy}  |  Coût : ${energyCost}`,
         pos: ex.vec(-250, 160),
@@ -315,7 +301,7 @@ export class GymMenu {
     startButton.on("pointerdown", () => {
 
     const energyCost = exercise.stats.energyCost ?? 0;
-
+    //The exercise doesn't start if not enough energy
     if (!BigStats.hasEnoughEnergy(energyCost)) {
 
         const message = new ex.Label({
@@ -329,19 +315,15 @@ export class GymMenu {
             }),
             anchor: ex.vec(0.5, 0.5)
         });
-
         this.background.addChild(message);
-
         return;
     }
         this.startExercise(exercise);
     });
-
     this.background.addChild(startButton);
     }
 
     private startExercise(exercise: Exercise) {
-
     //Empties the menu
     for (const child of [...this.background.children]) {
         this.background.removeChild(child);
@@ -360,10 +342,9 @@ export class GymMenu {
         }),
         anchor: ex.vec(0.5, 0.5)
     });
-
     this.background.addChild(title);
 
-
+    //Waiting screen during the exercise
     const status = new ex.Label({
         text: "EXERCICE EN COURS",
         pos: ex.vec(0, -200),
@@ -375,9 +356,7 @@ export class GymMenu {
         }),
         anchor: ex.vec(0.5, 0.5)
     });
-
     this.background.addChild(status);
-
 
     const timer = new ex.Label({
         text: `${remainingTime}`,
@@ -390,25 +369,20 @@ export class GymMenu {
         }),
         anchor: ex.vec(0.5, 0.5)
     });
-
     this.background.addChild(timer);
-
-
+    //Updates the timer every second
     const interval = setInterval(() => {
-
         remainingTime--;
         timer.text = `${remainingTime}`;
-
+        // Ends the exercise when the countdown reaches zero
         if (remainingTime <= 0) {
             clearInterval(interval);
             this.finishExercise(exercise);
         }
-
     }, 1000);
 }
 
 private finishExercise(exercise: Exercise) {
-
     // Update the player's stats based on the exercise's effects
     if (exercise.stats.strength !== undefined) {
         BigStats.addStrength(exercise.stats.strength);
@@ -424,6 +398,7 @@ private finishExercise(exercise: Exercise) {
         BigStats.useEnergy(exercise.stats.energyCost);
     }
 
+    //Debug purpose
     console.log("================================");
     console.log("EXERCICE TERMINÉ :", exercise.name);
     console.log("FORCE :", BigStats.Strength);
@@ -434,13 +409,12 @@ private finishExercise(exercise: Exercise) {
 
     this.showExerciseFinished(exercise);
 }
-
+//Finished exercise screen
 private showExerciseFinished(exercise: Exercise) {
 
     for (const child of [...this.background.children]) {
         this.background.removeChild(child);
     }
-
 
     const title = new ex.Label({
         text: "EXERCICE TERMINÉ !",
@@ -453,9 +427,7 @@ private showExerciseFinished(exercise: Exercise) {
         }),
         anchor: ex.vec(0.5, 0.5)
     });
-
     this.background.addChild(title);
-
 
     const exerciseName = new ex.Label({
         text: exercise.name,
@@ -471,7 +443,7 @@ private showExerciseFinished(exercise: Exercise) {
 
     this.background.addChild(exerciseName);
 
-
+//Prepares list of stats modified by exercise
     const gains: string[] = [];
 if (exercise.stats.strength !== undefined) {
     gains.push(`Force : +${exercise.stats.strength}`);

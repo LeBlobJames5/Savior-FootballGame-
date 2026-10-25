@@ -116,5 +116,3 @@ const walkUp = ex.Animation.fromSpriteSheet(
     [2, 6, 10],
     150
 );
-
-

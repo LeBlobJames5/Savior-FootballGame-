@@ -5,8 +5,8 @@ import { MusicManager } from '../Music/MusicManager';
 import { BigStats } from '../State/stats';
 
 export class City extends ex.Scene {
-  private citizen!: Citizen;
-  private transitionStarted = false;
+  //Properties of the class
+  private citizen!: Citizen;  private transitionStarted = false;
   private nearHouse = false;
   private houseHint!: ex.Label;
 
@@ -14,6 +14,7 @@ export class City extends ex.Scene {
   private gymPosition = new ex.Vector(320, 125);
   private housePosition = new ex.Vector(600, 145);
 
+  //Builds city and manages interactions
   onInitialize(engine: ex.Engine): void {
     MusicManager.play(Resources.GymCityMusic);
 
@@ -23,6 +24,7 @@ export class City extends ex.Scene {
       anchor: ex.Vector.Zero,
       collisionType: ex.CollisionType.PreventCollision
     });
+
     city.graphics.use(Resources.City.toSprite());
     this.add(city);
 
@@ -30,10 +32,12 @@ export class City extends ex.Scene {
     //this.citizen.pos = new ex.Vector(100, 100);
     this.add(this.citizen);
 
+    //Creates markers for destinations
     this.addMarker('MATCH', this.matchPosition.x - 25, this.matchPosition.y - 15, ex.Color.fromHex('#3B82F6'));
-    this.addMarker('GYM', this.gymPosition.x, this.gymPosition.y - 20, ex.Color.fromHex('#EF4444'));
+    this.addMarker('GYM', this.gymPosition.x, this.gymPosition.y - 20, ex.Color.fromHex('#EF4444',));
     this.addMarker('MAISON', this.housePosition.x, this.housePosition.y - 45, ex.Color.fromHex('#56B6C2'));
 
+    //Creates invisible zones that detect nearby destinations
     const matchTrigger = this.createTrigger(this.matchPosition, 34, 45);
     const gymTrigger = this.createTrigger(this.gymPosition, 28, 28);
     const houseTrigger = this.createTrigger(this.housePosition, 10, 10);
@@ -48,12 +52,15 @@ export class City extends ex.Scene {
       font: new ex.Font({ size: 12, family: 'Arial', color: ex.Color.White }),
       z: 50
     });
+
     this.add(this.houseHint);
     this.houseHint.graphics.opacity = 0;
 
     this.on('postupdate', () => {
-      if (this.transitionStarted) return;
-
+      if (this.transitionStarted) 
+        return;
+    
+      //Calculates distance between Citizen and destinations
       const matchDistance = this.citizen.pos.distance(matchTrigger.pos);
       const gymDistance = this.citizen.pos.distance(gymTrigger.pos);
       const houseDistance = this.citizen.pos.distance(houseTrigger.pos);
@@ -89,12 +96,13 @@ export class City extends ex.Scene {
     });
 
     this.camera.strategy.lockToActor(this.citizen);
-    this.camera.zoom = 1.5;
+    this.camera.zoom = 2.5;
     this.camera.strategy.limitCameraBounds(
       new ex.BoundingBox(0, 0, Resources.City.width, Resources.City.height)
     );
   }
 
+  //Invisible actor as detection zone
   private createTrigger(pos: ex.Vector, width: number, height: number): ex.Actor {
     return new ex.Actor({
       pos,
@@ -105,38 +113,14 @@ export class City extends ex.Scene {
     });
   }
 
-  private addHousePart(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    color: string
-  ): void {
-    const part = new ex.Actor({
-      x,
-      y,
-      width,
-      height,
-      anchor: ex.Vector.Half,
-      collisionType: ex.CollisionType.PreventCollision,
-      z: 10
-    });
-    part.graphics.use(
-      new ex.Rectangle({
-        width,
-        height,
-        color: ex.Color.fromHex(color)
-      })
-    );
-    this.add(part);
-  }
-
+  
   private addMarker(
     text: string,
     x: number,
     y: number,
     color: ex.Color
   ): void {
+
     const marker = new ex.Label({
       text,
       pos: new ex.Vector(x, y),
@@ -163,7 +147,7 @@ export class City extends ex.Scene {
         width: 3000,
         height: 15,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -174,7 +158,7 @@ export class City extends ex.Scene {
         width: 415,
         height: 175,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -185,7 +169,7 @@ export class City extends ex.Scene {
         width: 1500,
         height: 175,
         color: ex.Color.Blue,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -196,7 +180,7 @@ export class City extends ex.Scene {
       width: 100,
       height: 1000,
       color: ex.Color.Red,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5
     });
@@ -207,7 +191,7 @@ export class City extends ex.Scene {
       width: 100,
       height: 800,
       color: ex.Color.Red,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5
     });
@@ -218,7 +202,7 @@ export class City extends ex.Scene {
       width: 100,
       height: 310,
       color: ex.Color.Green,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5
     });
@@ -229,7 +213,7 @@ export class City extends ex.Scene {
       width: 100,
       height: 310,
       color: ex.Color.Green,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -240,7 +224,7 @@ export class City extends ex.Scene {
       width: 110,
       height: 265,
       color: ex.Color.Green,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -251,7 +235,7 @@ export class City extends ex.Scene {
       width: 225,
       height: 125,
       color: ex.Color.Red,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -262,7 +246,7 @@ export class City extends ex.Scene {
       width: 335,
       height: 190,
       color: ex.Color.Green,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -273,7 +257,7 @@ export class City extends ex.Scene {
       width: 448,
       height: 190,
       color: ex.Color.Blue,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -284,7 +268,7 @@ export class City extends ex.Scene {
       width: 448,
       height: 270,
       color: ex.Color.Black,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -295,7 +279,7 @@ export class City extends ex.Scene {
       width: 480,
       height: 50,
       color: ex.Color.Gray,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -306,7 +290,7 @@ export class City extends ex.Scene {
       width: 335,
       height: 140,
       color: ex.Color.Yellow,
-      opacity: 0.5,
+      opacity: 0,
       collisionType: ex.CollisionType.Fixed,
       z: 5,
     });
@@ -325,10 +309,5 @@ export class City extends ex.Scene {
     this.add(WallHouse4);
     this.add(WallHouseBottom1);
     this.add(WallHouseBottom2)
-
-
-
-
-
   }
 }

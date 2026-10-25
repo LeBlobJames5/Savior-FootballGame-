@@ -55,7 +55,7 @@ this.player.on("collisionend", (evt) => {
 
 });
         
-        //Meadow Sprite
+    //Meadow Sprite
     const gymMeadow = new ex.Actor({
         x: 1280,
         y: 720,
@@ -70,7 +70,7 @@ this.player.on("collisionend", (evt) => {
         meadowSprite.height = 3000;
         gymMeadow.graphics.use(meadowSprite);
 
-        //Gym Sprite
+    //Gym Sprite
     const gymBackground = new ex.Actor({
         x: 1280,
         y: 720,
@@ -99,7 +99,7 @@ this.player.on("collisionend", (evt) => {
         width: 80,
         height: 80,
         color: ex.Color.Green,
-        opacity: 0.5,
+        opacity: 0.,
             })
         );
 
@@ -117,8 +117,6 @@ this.player.on("collisionend", (evt) => {
 
     });
 
-
-    
     const wallThickness = 30;
 
     const topWallLeft = new ex.Actor({
@@ -127,7 +125,7 @@ this.player.on("collisionend", (evt) => {
         width: 1200,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -138,7 +136,7 @@ this.player.on("collisionend", (evt) => {
         width: 1200,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -149,7 +147,7 @@ this.player.on("collisionend", (evt) => {
         width: 1550,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
@@ -160,7 +158,7 @@ this.player.on("collisionend", (evt) => {
         width: wallThickness,
         height: 1000,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5,
     });
@@ -171,7 +169,7 @@ this.player.on("collisionend", (evt) => {
         width: wallThickness,
         height: 1000,
         color: ex.Color.Red,
-        opacity: 0.5,
+        opacity: 0,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5,
     });
@@ -280,8 +278,6 @@ this.squatRack = new GymMachine(
     
     }
 
-
-
 //Override onPreUpdate to check if the player is in the detection zone of any machine
 override onPreUpdate(engine: ex.Engine, elapsed: number) {
 
@@ -339,7 +335,6 @@ override onPreUpdate(engine: ex.Engine, elapsed: number) {
             playerY >= top &&
             playerY <= bottom;
 
-
         if (inside) {
 
             const distance =
@@ -352,7 +347,6 @@ override onPreUpdate(engine: ex.Engine, elapsed: number) {
             }
         }
     }
-
 
     //A machine is detected, set it in the gym menu, otherwise clear the gym menu
     if (closestMachine) {

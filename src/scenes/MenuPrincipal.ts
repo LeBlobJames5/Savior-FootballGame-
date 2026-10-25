@@ -18,19 +18,17 @@ export class MainMenu extends ex.Scene {
   onInitialize(engine: ex.Engine): void {
     MusicManager.play(Resources.GymCityMusic);
 
-    // FOND
     this.background = new ex.Actor({
       x: 0,
       y: 0,
       anchor: ex.Vector.Zero,
-      z: -100
+      z: -100,
     });
 
     this.background.graphics.use(
       Resources.MainMenu.toSprite()
     );
 
-    // LOGO
     this.logo = new ex.Actor({
       x: 0,
       y: 0,
@@ -40,7 +38,6 @@ export class MainMenu extends ex.Scene {
 
     this.logo.graphics.use(Resources.Logo.toSprite());
 
-    // SLOGAN
     this.subtitle = new ex.Label({
       text: 'ENTRAÎNEMENT. PROGRESSION. DOMINATION.',
       pos: ex.vec(0, 0),
@@ -56,7 +53,6 @@ export class MainMenu extends ex.Scene {
 
     this.subtitle.anchor = ex.Vector.Zero;
 
-    // BOUTON JOUER
     this.playButton = this.createImageButton({
       x: 0,
       y: 0,
@@ -66,7 +62,6 @@ export class MainMenu extends ex.Scene {
       onClick: () => engine.goToScene('city')
     });
 
-    // PANNEAU EXPLICATIF
     this.panel = new ex.Actor({
       x: 0,
       y: 0,
@@ -82,7 +77,7 @@ export class MainMenu extends ex.Scene {
       })
     );
 
-    // TITRE ET LIGNES SÉPARÉS
+    //Titles and lines separated
     this.panelTitle = this.createLabel(
       'COMMENT JOUER',
       24,
@@ -113,7 +108,6 @@ export class MainMenu extends ex.Scene {
       ex.Color.White
     );
 
-    // AJOUT DES ACTEURS
     this.add(this.background);
     this.add(this.logo);
     this.add(this.subtitle);
@@ -126,19 +120,17 @@ export class MainMenu extends ex.Scene {
     this.add(this.panelLine3);
     this.add(this.panelLine4);
 
-    // DISPOSITION RESPONSIVE
+    //Responsive disposition
     const layout = () => {
       const w = engine.drawWidth;
       const h = engine.drawHeight;
       const cx = w / 2;
 
-      // Fond
       const backgroundSprite = Resources.MainMenu.toSprite();
 
       const scaleX = w / backgroundSprite.width;
       const scaleY = h / backgroundSprite.height;
 
-      // Remplir toute la fenêtre sans bandes vides
       const scale = Math.max(scaleX, scaleY);
 
       backgroundSprite.scale = ex.vec(scale, scale);
@@ -147,7 +139,6 @@ export class MainMenu extends ex.Scene {
       this.background.pos = ex.vec(cx, h / 2);
       this.background.anchor = ex.Vector.Half;
 
-      // Logo
       const logoSprite = Resources.Logo.toSprite();
       const logoScale = Math.min(1, (w * 0.64) / logoSprite.width);
 
@@ -155,11 +146,9 @@ export class MainMenu extends ex.Scene {
       this.logo.graphics.use(logoSprite);
       this.logo.pos = ex.vec(cx, h * 0.37);
 
-      // Slogan et bouton
       this.subtitle.pos = ex.vec(cx, h * 0.34);
       this.playButton.pos = ex.vec(cx, h * 0.60);
 
-      // Panneau
       const panelWidth = Math.max(280,Math.min(1000, w - 48));
       const panelY = h * 0.78;
 
@@ -173,14 +162,12 @@ export class MainMenu extends ex.Scene {
         })
       );
 
-      // CHAQUE LABEL EST CENTRÉ SUR L'AXE X DU PANNEAU
       this.panelTitle.pos = ex.vec(cx, panelY - 55);
       this.panelLine1.pos = ex.vec(cx, panelY - 15);
       this.panelLine2.pos = ex.vec(cx, panelY + 12);
       this.panelLine3.pos = ex.vec(cx, panelY + 35);
       this.panelLine4.pos = ex.vec(cx, panelY + 58);
 
-      // Réduction du texte sur les petites fenêtres
       const textSize = w < 700 ? 12 : 16;
       const titleSize = w < 700 ? 16 : 20;
 
@@ -216,7 +203,6 @@ export class MainMenu extends ex.Scene {
     engine.on('resize', layout);
   }
 
-  // CRÉATION D'UN LABEL CENTRÉ
   private createLabel(
     text: string,
     size: number,
@@ -234,14 +220,11 @@ export class MainMenu extends ex.Scene {
       z: 22
     });
 
-    // Le texte est centré sur la position du label.
-    // Ne pas ajouter une seconde correction d'ancrage.
     label.anchor = ex.Vector.Zero;
 
     return label;
   }
 
-  // CRÉATION DU BOUTON IMAGE
   private createImageButton(options: {
     x: number;
     y: number;

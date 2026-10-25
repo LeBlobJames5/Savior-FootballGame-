@@ -9,7 +9,7 @@ import { City } from './scenes/City';
 const game = new ex.Engine({
   width: 2560,
   height: 1440,
-  displayMode: ex.DisplayMode.FitScreenAndFill,
+  displayMode: ex.DisplayMode.FitScreenAndZoom,
   suppressPlayButton: true,
 });
 
@@ -20,4 +20,4 @@ game.add('city', new City());
 
 game.start(ResourceLoader).then(() => {
   game.goToScene('menu');
-});
+}); 

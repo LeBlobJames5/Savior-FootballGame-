@@ -4,7 +4,6 @@ import { FootballPlayer } from './Bot';
 export class FootballAI {
 
 //Defenders AI
-
   static updateDefense(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
@@ -13,26 +12,23 @@ export class FootballAI {
   ) {
 
     switch (player.role) {
-
+      //DL put pressure on the ball carrier
       case 'DL':
         this.updateDL(player, ballCarrier, elapsed);
         break;
-
+      //LBs first defend their zone, then react to the ball carrier
       case 'LB':
         this.updateLB(player, ballCarrier, elapsed);
         break;
-
+      //CBs follow their assigned receiver if available
       case 'CB': 
         this.updateCB( player, ballCarrier, elapsed, assignedReceiver ); 
         break;
-      
-      
+      //Safeties cover a deeper zone before stepping in
       case 'S': 
         this.updateSafety(player, ballCarrier, elapsed); 
         break;
-
     }
-
   }
 
   private static moveTowards(
@@ -42,16 +38,14 @@ export class FootballAI {
     elapsed: number,
     stopDistance: number = 5
   ) {
-
-
-
-
+    //Calculates the vector from the player to their target
     const direction = target.sub(player.pos);
-
+    
+    //Stop movement if the player is close enough
     if (direction.magnitude <= stopDistance) {
       return;
     }
-
+    // Normalizes the direction and then calculates the movement based on the velocity and elapsed time to maintain a consistent velocity
     const movement = direction  
       .normalize()
       .scale(speed * elapsed / 1000);
@@ -59,16 +53,12 @@ export class FootballAI {
     player.pos = player.pos.add(movement);
   }
 
-  // ==========================================
-  // DEFENSIVE LINE
-  // ==========================================
-
+  //DL put pressure on RB. Behavior depends on distance
   private static updateDL(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
     elapsed: number
   ) {
-
 
     const target = new ex.Vector(
       player.homePosition.x - 80, 
@@ -77,8 +67,8 @@ export class FootballAI {
 
     const distanceToQB =
      player.pos.distance(ballCarrier.pos);
-
-    if (distanceToQB > 170) {
+     // If the ball carrier is far away, the defender moves toward him
+     if (distanceToQB > 170) {
 
       this.moveTowards(
         player, 
@@ -89,7 +79,7 @@ export class FootballAI {
       );
 
     } else {
-
+    //If close enough, defender comes back to pressing position
       this.moveTowards(
         player,
         target,
@@ -99,11 +89,7 @@ export class FootballAI {
       );
     }
   }
-
-  // ==========================================
-  // LINEBACKER
-  // ==========================================
-
+  //LBs repositione themselves in their zones, then pursue the ball carrier as he approaches 
   private static updateLB(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
@@ -141,11 +127,7 @@ export class FootballAI {
       );
     }
   }
-
-  // ==========================================
-  // CORNERBACK
-  // ==========================================
-
+  //CB follows a receiver if he has one. If not, comes back to starting position
   private static updateCB(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
@@ -196,12 +178,7 @@ export class FootballAI {
     );
   }
 }
-
-
-
-  // SAFETY
-  // ==========================================
-
+  //Safeties cover deep and step in if RB approaches
   private static updateSafety(
     player: FootballPlayer,
     ballCarrier: FootballPlayer,
@@ -234,11 +211,7 @@ export class FootballAI {
       );
     }
 }
-
-  // ==========================================
-  // IA OFFENSIVE
-  // ==========================================
-
+  //Distributes offensive behaviors based on the position
   static updateOffense(
     player: FootballPlayer,
     quarterback: FootballPlayer,
@@ -266,18 +239,13 @@ export class FootballAI {
     }
 
   }
-
-
-  // ==========================================
-  // WIDE RECEIVER
-  // ==========================================
-
+  //WR moves to the right and returns to original vertical line if movement takes him away from it.
   private static updateWR(
     player: FootballPlayer,
     elapsed: number
   ) {
 
-    // Les WR avancent vers la droite.
+    //WRs move to the right
     const speed = 110;
 
     player.pos.x += speed * elapsed / 1000;
@@ -291,12 +259,7 @@ export class FootballAI {
       player.pos.y += Math.sign(yDifference) * 30 * elapsed / 1000;
   }
 }
-
-
-  // ==========================================
-  // RUNNING BACK
-  // ==========================================
-
+  //Bring RB close to QB 
   private static updateRB(
     player: FootballPlayer,
     quarterback: FootballPlayer,
@@ -316,13 +279,7 @@ export class FootballAI {
       5
     );
   }
-
-
-
-  // ==========================================
-  // OFFENSIVE LINE
-  // ==========================================
-
+  //Move OLs slightly to the right and corrects vertical position
   private static updateOL(
     player: FootballPlayer,
     elapsed: number

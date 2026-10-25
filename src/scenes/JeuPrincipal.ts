@@ -4,6 +4,7 @@ import { BigStats } from '../State/stats';
 import { MatchResults } from '../UI/MatchResults';
 import { Resources } from '../resources'
 
+//Every game state possible
 type PlayPhase =
   | 'pre-snap'
   | 'handoff'
@@ -11,7 +12,9 @@ type PlayPhase =
   | 'dead'
   | 'finished';
 
+
 export class GameScene extends ex.Scene {
+  //Class Properties
   private qb!: FootballPlayer;
   private rb!: FootballPlayer;
   private ball!: ex.Actor;
@@ -48,13 +51,15 @@ export class GameScene extends ex.Scene {
   private gap = 2;
   private gapOffsets = [0, 0, 0, 0, 0];
 
-  // Réaction individuelle de la défense après la remise du ballon.
+  //Class methods
+  //Individual defense reaction post-snap
   private defenseReactionDelays = new Map<FootballPlayer, number>();
 
-  // Les DL peuvent gagner un duel puis poursuivre le RB pendant un court moment.
+  //DL can win 1v1 against OL and pursue the RB for a moment
   private shedTimers = new Map<FootballPlayer, number>();
   private shedAttemptTimers = new Map<FootballPlayer, number>();
 
+  private firstPlayLabel!: ex.Label;
   private nextPlayLabel!: ex.Label;
   private summaryLabel!: ex.Label;
   private timerElement!: ex.ScreenElement;
@@ -62,6 +67,7 @@ export class GameScene extends ex.Scene {
   private resultsShown = false;
   private gameEngine!: ex.Engine;
 
+  //Initializing the scene
   onInitialize(engine: ex.Engine): void {
     this.gameEngine = engine;
 
@@ -80,7 +86,7 @@ export class GameScene extends ex.Scene {
 
     this.createField();
 
-    // OFFENSE : 11 joueurs
+    //11 players on offense
     const bluePositions: {
       x: number;
       y: number;
@@ -112,11 +118,12 @@ export class GameScene extends ex.Scene {
       this.add(player);
       this.bluePlayers.push(player);
 
+      //Identifying QB and RB as controlable players
       if (p.role === 'QB') this.qb = player;
       if (p.role === 'RB') this.rb = player;
     }
 
-    // DEFENSE : 11 joueurs
+    //11 players on defense
     const redPositions: {
       x: number;
       y: number;
@@ -149,18 +156,22 @@ export class GameScene extends ex.Scene {
       this.add(player);
       this.redPlayers.push(player);
 
-      // Les défenseurs ne réagissent pas tous à la même milliseconde.
       const index = this.redPlayers.length - 1;
+      //Base reaction time is different for every defender(DL = fastest)
       const baseDelay = p.role === 'DL' ? 0.18 : 0.28;
+      //Delay varies according to player index
       this.defenseReactionDelays.set(
         player,
         baseDelay + (index % 5) * 0.075
       );
+      //Duel OffvsDef
+      //The amount of time a defender was able to break free from a blocker.
       this.shedTimers.set(player, 0);
+      //The time remaining before its next disengagement attempt.
       this.shedAttemptTimers.set(player, 0.25 + Math.random() * 0.45);
     }
 
-    // BALLON
+    // Ball
     this.ball = new ex.Actor({
       x: this.qb.pos.x + 12,
       y: this.qb.pos.y,
@@ -169,16 +180,29 @@ export class GameScene extends ex.Scene {
       collisionType: ex.CollisionType.PreventCollision
     });
 
-    this.ball.graphics.use(
-      new ex.Circle({
-        radius: 6,
-        color: ex.Color.fromHex('#713F22')
-      })
-    );
+    const ballSprite = Resources.BallImg.toSprite();
+      ballSprite.width = 12
+      ballSprite.height = 8
 
+    this.ball.graphics.use(ballSprite);
     this.add(this.ball);
 
-    // MESSAGE NEXT PLAY
+    //Displays how to play before first snap
+    this.firstPlayLabel = new ex.Label({
+      text: 'ESPACE POUR COMMENCER',
+      x: this.rb.pos.x - 240,
+      y: this.rb.pos.y - 50,
+      font: new ex.Font({
+        size: 24,
+        family: 'Arial'
+      }),
+      color: ex.Color.White
+    });
+    
+    this.add(this.firstPlayLabel);
+    this.firstPlayLabel.graphics.opacity = 0;
+
+    //Next play message
     this.nextPlayLabel = new ex.Label({
       text: '',
       pos: new ex.Vector(0, 0),
@@ -192,7 +216,7 @@ export class GameScene extends ex.Scene {
     this.add(this.nextPlayLabel);
     this.nextPlayLabel.graphics.opacity = 0;
 
-    // BILAN FINAL
+    //Final summary
     this.summaryLabel = new ex.Label({
       text: '',
       pos: new ex.Vector(0, 0),
@@ -206,13 +230,16 @@ export class GameScene extends ex.Scene {
     this.add(this.summaryLabel);
     this.summaryLabel.graphics.opacity = 0;
 
-    // Chronomètre fixé à l'écran : il reste visible malgré le suivi de la caméra.
+    //Timer attached to screen. Remains visible even when camera moves
     this.timerElement = new ex.ScreenElement({
-      x: 18,
-      y: 16,
-      z: 100
+      x: 34,
+      y: 32,
+      z: 100,
+      width : 1000,
+      height: 1000
     });
     this.timerElement.anchor = ex.Vector.Zero;
+
     this.timerElement.graphics.use(
       new ex.Text({
         text: 'TEMPS : 1:00',
@@ -228,17 +255,13 @@ export class GameScene extends ex.Scene {
     this.chooseNewGap();
     this.positionBall();
 
-    // CAMÉRA : suivre le running back sans dépasser le terrain
-    this.camera.zoom = 1.5;
-
+    //Camera follows the RB
+    this.camera.zoom = 3;
     this.camera.strategy.lockToActor(this.rb);
 
   }
 
-  // --------------------------------------------------
-  // TERRAIN
-  // --------------------------------------------------
-
+  //Green rectangle for the field
   private createField(): void {
     const field = new ex.Actor({
       x: 0,
@@ -259,6 +282,7 @@ export class GameScene extends ex.Scene {
 
     this.add(field);
 
+    //Markers at regular intervals of 100 units
     for (let x = 100; x < this.fieldWidth; x += 100) {
       const line = new ex.Actor({
         x,
@@ -282,11 +306,9 @@ export class GameScene extends ex.Scene {
     }
   }
 
-  // --------------------------------------------------
-  // BOUCLE PRINCIPALE
-  // --------------------------------------------------
-
+  //Constantly called by Excalibur. Checks Keys pressed, Timer, and each phase of the game
   onPreUpdate(engine: ex.Engine, elapsed: number): void {
+    //Elapsed = milliseconds. Calculate movements and durations independently of the display frequency.
     const dt = elapsed / 1000;
 
     if (this.matchOver || this.phase === 'finished') {
@@ -298,7 +320,7 @@ export class GameScene extends ex.Scene {
 
     this.phaseTime += dt;
 
-    // Le chronomètre continue entre les actions.
+    //Timers never stops
     if (this.matchStarted) {
       this.matchElapsed += dt;
 
@@ -311,12 +333,21 @@ export class GameScene extends ex.Scene {
       this.updateTimerDisplay();
     }
 
-    // Affiche le temps complet avant le premier snap.
+    if (!this.matchStarted) {
+      this.firstPlayLabel.graphics.opacity = 1;
+    }
+
+    if (engine.input.keyboard.wasPressed(ex.Keys.Space)) {
+      this.matchStarted = true;
+      this.firstPlayLabel.graphics.opacity = 0;
+    } 
+
+    //Displays full time before first snap
     if (!this.matchStarted) {
       this.updateTimerDisplay();
     }
 
-    // AVANT LE SNAP
+    //Before first snap
     if (this.phase === 'pre-snap') {
       this.positionBall();
 
@@ -327,7 +358,7 @@ export class GameScene extends ex.Scene {
       return;
     }
 
-    // APRÈS UN PLAQUAGE OU UN TOUCHDOWN
+    //After a tackle or a TD
     if (this.phase === 'dead') {
       this.positionBall();
 
@@ -338,7 +369,7 @@ export class GameScene extends ex.Scene {
       return;
     }
 
-    // HANDOFF QB -> RB
+    //QB to RB handoff
     if (this.phase === 'handoff') {
       this.positionBall();
 
@@ -350,7 +381,7 @@ export class GameScene extends ex.Scene {
       return;
     }
 
-    // ACTION EN COURS
+    //Ongoing action
     if (this.phase === 'running') {
       this.controlRunningBack(engine, dt);
 
@@ -366,16 +397,14 @@ export class GameScene extends ex.Scene {
     }
   }
 
-  // --------------------------------------------------
-  // SNAP ET HANDOFF
-  // --------------------------------------------------
-
+  //Starts new action. Starts the play, initiates the passing play, records the running back's starting position, and increments the play counter.
   private startPlay(): void {
     if (this.matchOver) return;
 
     this.matchStarted = true;
     this.phase = 'handoff';
     this.phaseTime = 0;
+    //Calculates yards gained
     this.playStartX = this.rb.pos.x;
     this.plays++;
     this.tackled = false;
@@ -383,6 +412,7 @@ export class GameScene extends ex.Scene {
     this.chooseNewGap();
   }
 
+  //Adapts position of the ball during the three situations(PreSnap, Handoff, Running)
   private positionBall(): void {
     if (this.phase === 'pre-snap') {
       this.ball.pos = new ex.Vector(
@@ -393,6 +423,7 @@ export class GameScene extends ex.Scene {
     }
 
     if (this.phase === 'handoff') {
+      //Changes from 0 to 1 over 0.45 seconds. The calculation combines the coordinates of both players to produce a gradual movement of the ball.
       const progress = Math.min(1, this.phaseTime / 0.45);
 
       this.ball.pos = new ex.Vector(
@@ -410,22 +441,17 @@ export class GameScene extends ex.Scene {
     );
   }
 
-  // --------------------------------------------------
-  // CHOIX DU GAP
-  // --------------------------------------------------
-
+  //Choses gap between for possibilities
   private chooseNewGap(): void {
     this.gap = Math.floor(Math.random() * 5);
 
+    //Blockers positions vary from one play to another
     for (let i = 0; i < 5; i++) {
       this.gapOffsets[i] = (Math.random() - 0.5) * 24;
     }
   }
 
-  // --------------------------------------------------
-  // CONTRÔLE DU RUNNING BACK
-  // --------------------------------------------------
-
+  //RB controls
   private controlRunningBack(
     engine: ex.Engine,
     dt: number
@@ -457,9 +483,10 @@ export class GameScene extends ex.Scene {
 
     if (dx === 0 && dy === 0) return;
 
+    //dx and dy indicate the direction. The normalize() method ensures that the velocity remains consistent diagonally.
     const direction = new ex.Vector(dx, dy).normalize();
 
-    // Stats de salle : faibles au niveau de base.
+    //Calculates speed according to stats. The value ranges from 0 to 100. If the statistic is undefined, it is 0.
     const trainedSpeed = Math.max(
       0,
       Math.min(100, BigStats.Speed ?? 0)
@@ -467,8 +494,7 @@ export class GameScene extends ex.Scene {
 
     const speed = 65 + trainedSpeed * 1.2;
 
-    // Respecte aussi un éventuel malus de blessure
-    // défini dans FootballPlayer.getCurrentSpeed().
+    //Also takes into account any injury penalty defined in `FootballPlayer.getCurrentSpeed()`.
     const playerSpeed = this.rb.getCurrentSpeed();
 
     const actualSpeed =
@@ -476,20 +502,19 @@ export class GameScene extends ex.Scene {
         ? Math.min(speed, playerSpeed)
         : Math.min(speed, playerSpeed);
 
+    //Movement is multiplied by dt
     this.rb.pos = this.rb.pos.add(
       direction.scale(actualSpeed * dt)
     );
   }
 
-  // --------------------------------------------------
-  // OFFENSIVE LINE
-  // --------------------------------------------------
-
+  //Manages 5 players in the OL
   private updateOffensiveLine(dt: number): void {
     const linemen = this.bluePlayers.filter(p =>
       ['LT', 'LG', 'C', 'RG', 'RT'].indexOf(p.role) !== -1
     );
 
+    
     const defensiveLinemen = this.redPlayers.filter(
       p => p.role === 'DL'
     );
@@ -537,15 +562,13 @@ export class GameScene extends ex.Scene {
     }
   }
 
-  // --------------------------------------------------
-  // RECEVEURS
-  // --------------------------------------------------
-
+  //Manages WR movements
   private updateWideReceivers(dt: number): void {
     const receivers = this.bluePlayers.filter(
       p => p.role === 'WR'
     );
 
+    //Alternating vertical offsets to vary their trajectories.
     receivers.forEach((wr, index) => {
       const vertical = index % 2 === 0 ? -1 : 1;
 
@@ -558,10 +581,7 @@ export class GameScene extends ex.Scene {
     });
   }
 
-  // --------------------------------------------------
-  // DEFENSIVE LINE
-  // --------------------------------------------------
-
+  //DL AI
   private updateDefensiveLine(dt: number): void {
     const dline = this.redPlayers.filter(p => p.role === 'DL');
     const blockers = this.bluePlayers.filter(p =>
@@ -578,8 +598,7 @@ export class GameScene extends ex.Scene {
       const blocker = this.nearestPlayer(defender.pos, blockers);
       const blockDistance = blocker ? defender.pos.distance(blocker.pos) : Infinity;
 
-      // Après un court délai, un DL cherche lui aussi à rejoindre le porteur.
-      // S'il est encore bloqué, il doit gagner son duel avant de poursuivre.
+      //After a short delay, a DL also tries to catch up with the carrier. If still blocked, he must win his duel before continuing.
       if (this.phaseTime >= reactionDelay && shedTime > 0) {
         this.moveToward(defender, this.chaseTarget(defender), this.defenderSpeed(defender, 124), dt);
         continue;
@@ -591,7 +610,7 @@ export class GameScene extends ex.Scene {
       }
 
       if (blocker && blockDistance < 62) {
-        // Le défenseur engage le bloqueur au lieu de traverser son sprite.
+        //The defender engages the blocker instead of passing through his sprite.
         const side = defender.pos.y < blocker.pos.y ? -1 : 1;
         const engagementTarget = new ex.Vector(
           blocker.pos.x + 19,
@@ -601,22 +620,23 @@ export class GameScene extends ex.Scene {
         if (blockDistance > 31) {
           this.moveToward(defender, engagementTarget, this.defenderSpeed(defender, 78), dt);
         } else {
-          // Tentative périodique de désengagement : la force aide, sans garantir la réussite.
+          // Periodic attempts to disengage. Force provides assistance, but does not guarantee success.
           if (attemptTime <= 0) {
             const strength = Math.max(0, defender.strength ?? 30);
+            //Disengagement probabilitiess 
             const successChance = Math.max(0.12, Math.min(0.48, 0.16 + strength * 0.004));
             if (Math.random() < successChance) {
               shedTime = 0.85 + Math.random() * 0.65;
               this.shedTimers.set(defender, shedTime);
               this.moveToward(defender, this.chaseTarget(defender), this.defenderSpeed(defender, 124), dt);
             }
-            // Réessaie régulièrement : les duels ne sont pas résolus chaque frame.
+            //Tries periodically. Duels aren't resolved every frame.
             attemptTime = 0.55 + Math.random() * 0.55;
             this.shedAttemptTimers.set(defender, attemptTime);
           }
         }
       } else if (this.phaseTime < reactionDelay) {
-        // Avant la réaction, conserve une position de départ crédible.
+        // Before reacting, maintain a credible starting position.
         this.moveToward(
           defender,
           new ex.Vector(defender.homePosition.x - 12, defender.homePosition.y),
@@ -627,10 +647,7 @@ export class GameScene extends ex.Scene {
     }
   }
 
-  // --------------------------------------------------
-  // LINEBACKERS
-  // --------------------------------------------------
-
+  //Linebackers
   private updateLinebackers(dt: number): void {
     const lbs = this.redPlayers.filter(p => p.role === 'LB');
     const receivers = this.bluePlayers.filter(p => p.role === 'WR');
@@ -638,8 +655,9 @@ export class GameScene extends ex.Scene {
     lbs.forEach((lb, index) => {
       const reactionDelay = this.defenseReactionDelays.get(lb) ?? 0.35;
 
+      //Chosing between pass coverage and run fit for realism
       if (this.phaseTime >= reactionDelay) {
-        // Les LB ferment des angles différents au lieu de courir tous en ligne droite.
+        //LBs cover different angles instead of all running in a straight line.
         this.moveToward(lb, this.chaseTarget(lb), this.defenderSpeed(lb, 116), dt);
         return;
       }
@@ -659,10 +677,7 @@ export class GameScene extends ex.Scene {
     });
   }
 
-  // --------------------------------------------------
-  // CORNERBACKS ET SAFETIES
-  // --------------------------------------------------
-
+  //DB cover and RB pursue
   private updateDefensiveBacks(dt: number): void {
     const receivers = this.bluePlayers.filter(p => p.role === 'WR');
     const corners = this.redPlayers.filter(p => p.role === 'CB');
@@ -712,8 +727,7 @@ export class GameScene extends ex.Scene {
     });
   }
 
-  // Point de convergence légèrement décalé pour que les défenseurs attaquent
-  // depuis plusieurs angles et ne s'empilent pas exactement au même endroit.
+  //The convergence point is slightly offset so that defenders attack from multiple angles and don't all pile up in exactly the same spot.
   private chaseTarget(defender: FootballPlayer): ex.Vector {
     const index = this.redPlayers.indexOf(defender);
     const offsets = [-18, 14, -8, 22, 0, -24, 10, 18, -12, 26, -2];
@@ -723,6 +737,7 @@ export class GameScene extends ex.Scene {
     return new ex.Vector(leadX, leadY);
   }
 
+  //Calculates a defender's movement speed based on their actual speed, using a factor between 0.65 and 1.2.
   private defenderSpeed(defender: FootballPlayer, baseSpeed: number): number {
     const playerSpeed = typeof defender.getCurrentSpeed === 'function'
       ? defender.getCurrentSpeed()
@@ -732,10 +747,9 @@ export class GameScene extends ex.Scene {
     return baseSpeed * ratio;
   }
 
-  // --------------------------------------------------
-  // OUTILS DE DÉPLACEMENT
-  // --------------------------------------------------
+  //Movement tools for AI
 
+  //Moves player towards target without overtaking. Limited to remaining distance or speed * elapsed time
   private moveToward(
     player: FootballPlayer,
     target: ex.Vector,
@@ -754,6 +768,7 @@ export class GameScene extends ex.Scene {
     );
   }
 
+  //Returns the closest player from a given list.
   private nearestPlayer(
     position: ex.Vector,
     players: FootballPlayer[]
@@ -773,6 +788,7 @@ export class GameScene extends ex.Scene {
     return nearest;
   }
 
+  //Forces players' coordinates to remain within the boundaries of the field.
   private clampPlayers(): void {
     for (const player of [
       ...this.bluePlayers,
@@ -790,10 +806,7 @@ export class GameScene extends ex.Scene {
     }
   }
 
-  // --------------------------------------------------
-  // PLAQUAGES ET TOUCHDOWNS
-  // --------------------------------------------------
-
+  //Tackles, TDs and injuries
   private checkTackle(): void {
     if (
       this.phase !== 'running' ||
@@ -803,7 +816,7 @@ export class GameScene extends ex.Scene {
       return;
     }
 
-    // TOUCHDOWN
+     //TD allowed if right coordinates
     if (this.rb.pos.x >= this.touchdownX) {
       const yards = Math.max(
         0,
@@ -823,8 +836,9 @@ export class GameScene extends ex.Scene {
       return;
     }
 
-    // PLAQUAGE PAR UN DÉFENSEUR
+    //Tackle by a defender
     for (const defender of this.redPlayers) {
+      //Checks to see if a defender is within 23 units of the RB.
       if (defender.pos.distance(this.rb.pos) < 23) {
         this.tacklesSuffered++;
 
@@ -849,7 +863,7 @@ export class GameScene extends ex.Scene {
           BigStats.Endurance ?? 0
         );
 
-        // Niveau de base : risque très élevé.
+        //Calculates injury risk. Starts at 80%. Strength and endurance can bring it down to 15%.
         const injuryChance = Math.max(
           0.15,
           Math.min(
@@ -868,16 +882,6 @@ export class GameScene extends ex.Scene {
         return;
       }
     }
-
-    // SORTIE DU TERRAIN
-    if (
-      this.rb.pos.x <= 0 ||
-      this.rb.pos.y <= 0 ||
-      this.rb.pos.y >= this.fieldHeight
-    ) {
-      this.nextPlaySpot = this.rb.pos.x;
-      this.endPlay('OUT OF BOUNDS!');
-    }
   }
 
   private endPlay(message: string): void {
@@ -890,8 +894,8 @@ export class GameScene extends ex.Scene {
     this.positionBall();
 
     this.nextPlayLabel.pos = new ex.Vector(
-      this.rb.pos.x - 450,
-      this.rb.pos.y - 55
+      this.rb.pos.x,
+      this.rb.pos.y - 65
     );
 
     this.nextPlayLabel.text =
@@ -900,10 +904,7 @@ export class GameScene extends ex.Scene {
     this.nextPlayLabel.graphics.opacity = 1;
   }
 
-  // --------------------------------------------------
-  // PRÉPARER LE JEU SUIVANT
-  // --------------------------------------------------
-
+  //Resets the players to the position where the previous action ended.
   private resetPlay(): void {
     if (this.matchOver) return;
 
@@ -994,13 +995,11 @@ export class GameScene extends ex.Scene {
     this.positionBall();
   }
 
-  // --------------------------------------------------
-  // FIN DU MATCH ET RÉCAPITULATIF
-  // --------------------------------------------------
-
+  //Calculates remaining time, converts seconds into minutes and seconds and updates text
   private updateTimerDisplay(): void {
     const remaining = Math.max(
       0,
+      //Rounds up to the next whole number to display a readable countdown.
       Math.ceil(this.matchDuration - this.matchElapsed)
     );
     const minutes = Math.floor(remaining / 60);
@@ -1019,6 +1018,7 @@ export class GameScene extends ex.Scene {
     );
   }
 
+  //Ends game and builds recap
   private finishMatch(): void {
     if (this.matchOver) return;
 
