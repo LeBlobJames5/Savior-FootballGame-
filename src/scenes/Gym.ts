@@ -26,18 +26,9 @@ export class Gym extends ex.Scene{
     private enduranceLabel!: ex.Label;
     private energyLabel!: ex.Label;
 
-    // Zone de jeu de référence : la caméra l'adapte à la taille de l'écran.
-    private readonly designViewWidth = 1600;
-    private readonly designViewHeight = 1200;
-    private readonly gymCenter = new ex.Vector(1360, 720);
-
     override onInitialize(engine: ex.Engine) {
 
     MusicManager.play(Resources.GymCityMusic);
-
-    // La caméra conserve la même composition, quelle que soit la résolution.
-    this.camera.pos = this.gymCenter.clone();
-    this.updateResponsiveCamera(engine);
      
     this.player = new Citizen();
     this.player.z = 5;
@@ -66,10 +57,10 @@ this.player.on("collisionend", (evt) => {
         
         //Meadow Sprite
     const gymMeadow = new ex.Actor({
-        x: 1550,
-        y: 1500,
-        width: 3100,
-        height: 3000,
+        x: 1280,
+        y: 720,
+        width: 800,
+        height: 500,
     })
 
     this.add(gymMeadow);
@@ -81,10 +72,10 @@ this.player.on("collisionend", (evt) => {
 
         //Gym Sprite
     const gymBackground = new ex.Actor({
-        x: 1550,
-        y: 1500,
-        width: 3100,
-        height: 3000,
+        x: 1280,
+        y: 720,
+        width: 800,
+        height: 500,
     });
 
     this.add(gymBackground);
@@ -97,7 +88,7 @@ this.player.on("collisionend", (evt) => {
 
     const cityTrigger = new ex.Actor({
           x: 1280,
-          y: 250,
+          y: 280,
           width: 80,
           height: 80,
           collisionType: ex.CollisionType.Fixed
@@ -108,7 +99,7 @@ this.player.on("collisionend", (evt) => {
         width: 80,
         height: 80,
         color: ex.Color.Green,
-        opacity: 0,
+        opacity: 0.5,
             })
         );
 
@@ -132,55 +123,55 @@ this.player.on("collisionend", (evt) => {
 
     const topWallLeft = new ex.Actor({
         x: 648,
-        y: 323,
+        y: 398,
         width: 1200,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0,
+        opacity: 0.5,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
 
     const topWallRight = new ex.Actor({
         x: 1915,
-        y: 323,
+        y: 398,
         width: 1200,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0,
+        opacity: 0.5,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
 
     const bottomWall = new ex.Actor({
         x: 1280,
-        y: 1110,
+        y: 1185,
         width: 1550,
         height: wallThickness,
         color: ex.Color.Red,
-        opacity: 0,
+        opacity: 0.5,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5
     });
 
     const leftWall = new ex.Actor({
         x: 823,
-        y: 650,
+        y: 725,
         width: wallThickness,
         height: 1000,
         color: ex.Color.Red,
-        opacity: 0,
+        opacity: 0.5,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5,
     });
 
     const rightWall = new ex.Actor({
         x: 1737,
-        y: 650,
+        y: 725,
         width: wallThickness,
         height: 1000,
         color: ex.Color.Red,
-        opacity: 0,
+        opacity: 0.5,
         collisionType: ex.CollisionType.Fixed, //ne se fera pas bouger post-collision
         z: 5,
     });
@@ -194,7 +185,7 @@ this.player.on("collisionend", (evt) => {
 
 this.squatRack = new GymMachine(
         1660,
-        355,
+        435,
         120,
         120,
         "SQUAT RACK",
@@ -209,7 +200,7 @@ this.squatRack = new GymMachine(
 
     this.treadmill = new GymMachine(
         1280,
-        645,
+        715,
         300,
         250,
         "TAPIS DE COURSE",
@@ -222,7 +213,7 @@ this.squatRack = new GymMachine(
 
     this.rowingMachine = new GymMachine(
         1630,
-        945,
+        1045,
         170,
         220,
         "RAMEUR",
@@ -233,7 +224,7 @@ this.squatRack = new GymMachine(
 
     this.sled = new GymMachine(
         950,
-        785,
+        865,
         150,
         560,
         "Sled",
@@ -245,7 +236,7 @@ this.squatRack = new GymMachine(
 
     this.plyoBox = new GymMachine(
         1021,
-        350,
+        430,
         100,
         100,
         "Plyo Box",
@@ -258,7 +249,7 @@ this.squatRack = new GymMachine(
 
     this.trapBar = new GymMachine(
         1280,
-        1000,
+        1090,
         275,
         145,
         "Trap Bar",
@@ -270,7 +261,7 @@ this.squatRack = new GymMachine(
 
     this.eBike = new GymMachine(
         1670,
-        650,
+        735,
         200,
         265,
         "Vélo elliptique",
@@ -293,8 +284,6 @@ this.squatRack = new GymMachine(
 
 //Override onPreUpdate to check if the player is in the detection zone of any machine
 override onPreUpdate(engine: ex.Engine, elapsed: number) {
-
-    this.updateResponsiveCamera(engine);
 
     const machines = [
         this.squatRack,
@@ -377,23 +366,6 @@ override onPreUpdate(engine: ex.Engine, elapsed: number) {
 }
 
 override onActivate() {
-        this.player.pos = new ex.Vector(1268, 350);
-        this.camera.pos = this.gymCenter.clone();
-    }
-
-    /**
-     * Ajuste le zoom à chaque frame : utile lorsque la fenêtre est redimensionnée.
-     * La caméra garde le gym entier dans le champ sans étirer les sprites.
-     */
-    private updateResponsiveCamera(engine: ex.Engine): void {
-        const viewWidth = Math.max(1, engine.drawWidth);
-        const viewHeight = Math.max(1, engine.drawHeight);
-
-        const zoomX = viewWidth / this.designViewWidth;
-        const zoomY = viewHeight / this.designViewHeight;
-
-        // On choisit le plus petit zoom pour que la zone de référence reste visible.
-        this.camera.zoom = Math.min(zoomX, zoomY);
-        this.camera.pos = this.gymCenter.clone();
+        this.player.pos = new ex.Vector(1280, 385);
     }
 }

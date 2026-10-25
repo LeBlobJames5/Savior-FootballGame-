@@ -21,7 +21,7 @@ export class GymMachine extends ex.Actor {
             width: width,
             height: height,
             color: ex.Color.Red,
-            opacity: 0,
+            opacity: 0.5,
             collisionType: ex.CollisionType.Fixed
         });
 

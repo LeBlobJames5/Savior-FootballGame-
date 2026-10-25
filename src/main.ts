@@ -6,9 +6,9 @@ import { Gym } from './scenes/Gym'
 import { City } from './scenes/City';
 
 
-
-
 const game = new ex.Engine({
+  width: 2560,
+  height: 1440,
   displayMode: ex.DisplayMode.FillScreen,
   suppressPlayButton: true,
 });
